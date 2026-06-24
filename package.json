@@ -1,0 +1,39 @@
+{
+  "name": "specly",
+  "version": "1.0.0",
+  "description": "Spec-Driven Development scaffolding: generates requirements, design, tasks, and steering for any AI agent.",
+  "main": "src/index.js",
+  "bin": {
+    "specly": "./src/index.js"
+  },
+  "files": [
+    "src/",
+    "how-to-use.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "postinstall": "node src/postinstall.js",
+    "test": "node --test test/*.js"
+  },
+  "keywords": [
+    "specly",
+    "spec-driven",
+    "scaffold",
+    "ai-agents",
+    "specs",
+    "cursor",
+    "kiro",
+    "ears",
+    "davidops"
+  ],
+  "author": "davidops",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}

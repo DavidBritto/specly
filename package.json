@@ -34,6 +34,10 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
-  }
+    "url": "git+https://github.com/DavidBritto/specly.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DavidBritto/specly/issues"
+  },
+  "homepage": "https://github.com/DavidBritto/specly#readme"
 }

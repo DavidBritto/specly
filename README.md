@@ -13,7 +13,7 @@
 
 <br>
 
-## ◆ The Problem
+## The Problem
 
 Building software with AI agents often looks like this:
 
@@ -38,7 +38,7 @@ Without structure, every agent session starts from zero. Requirements drift. Tas
 
 <br>
 
-## ◆ The Solution
+## The Solution
 
 **specly** scaffolds a standard Spec-Driven Development workspace in seconds.
 
@@ -77,7 +77,7 @@ A copy of `how-to-use.md` is placed in your project and opened in your IDE.
 
 <br>
 
-## ◆ Supported Agents
+## Supported Agents
 
 specly detects your environment and writes files to the standard path for each agent:
 
@@ -97,7 +97,7 @@ specly detects your environment and writes files to the standard path for each a
 
 <br>
 
-## ◆ Quick Start
+## Quick Start
 
 ```bash
 # Auto-detect agent
@@ -123,7 +123,7 @@ specly --agent kiro -n payments
 
 <br>
 
-## ◆ CLI Options
+## CLI Options
 
 ```
 npx specly [options]
@@ -141,7 +141,7 @@ npx specly [options]
 
 <br>
 
-## ◆ Development
+## Development
 
 ```bash
 git clone <repo-url>
@@ -156,7 +156,7 @@ npm link          # test locally: specly
 
 <br>
 
-## ◆ Credits
+## Credits
 
 Created by **[davidops](https://www.npmjs.com/~davidops)**
 

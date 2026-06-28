@@ -1,4 +1,5 @@
-<p align="center">
+<div align="center">
+
 <pre>
    _____ ____  ________________  __
   / ___// __ \/ ____/ ____/ /\ \/ /
@@ -6,10 +7,12 @@
  ___/ / ____/ /___/ /___/ /___/ /
 /____/_/   /_____/\____/_____/_/
 </pre>
-</p>
 
-**Specly** a Spec-Driven Development scaffolding for AI agents
+<h3><a href="https://github.com/DavidBritto/specly">specly</a></h3>
 
+<p><sub>A Spec-Driven Development scaffolding for AI agents</sub></p>
+
+</div>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/specly"><img src="https://img.shields.io/npm/v/specly" alt="npm version"></a>

@@ -4,7 +4,6 @@
  (__  ) /_/ /  __/ /__/ / /_/ / 
 /____/ .___/\___/\___/_/\__, /  
     /_/                /____/   
-
 **Specly** a Spec-Driven Development scaffolding for AI agents
 
 

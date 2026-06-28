@@ -1,5 +1,3 @@
-<div align="center">
-
 ```text
    _____ ____  ________________  __
   / ___// __ \/ ____/ ____/ /\ \/ /
@@ -8,13 +6,7 @@
 /____/_/   /_____/\____/_____/_/
 ```
 
-</div>
-
-<h3><a href="https://github.com/DavidBritto/specly">specly</a></h3>
-
-<p><sub>A Spec-Driven Development scaffolding for AI agents</sub></p>
-
-</div>
+**specly** — **Spec-Driven Development** scaffolding for AI agents: requirements, design, tasks, and steering before code.
 
 <p align="center">
   <a href="https://www.npmjs.com/package/specly"><img src="https://img.shields.io/npm/v/specly" alt="npm version"></a>
@@ -228,7 +220,7 @@ PRs are welcome. Please run `npm test` before submitting. Open an [issue](https:
 
 Created by **[davidops](https://www.npmjs.com/~davidops)**
 
-- [npm](https://www.npmjs.com/~davidops)
+- [npm](https://www.npmjs.com/package/specly)
 - [GitHub](https://github.com/DavidBritto)
 
 ---

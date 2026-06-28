@@ -1,9 +1,13 @@
+<p align="center">
+<pre>
+   _____ ____  ________________  __
+  / ___// __ \/ ____/ ____/ /\ \/ /
+  \__ \/ /_/ / __/ / /   / /  \  /
+ ___/ / ____/ /___/ /___/ /___/ /
+/____/_/   /_____/\____/_____/_/
+</pre>
+</p>
 
-   _________  ___  _____/ /_  __
-  / ___/ __ \/ _ \/ ___/ / / / /
- (__  ) /_/ /  __/ /__/ / /_/ / 
-/____/ .___/\___/\___/_/\__, /  
-    /_/                /____/   
 **Specly** a Spec-Driven Development scaffolding for AI agents
 
 
@@ -28,7 +32,7 @@
 
 ---
 
-## The Problem
+## Problem 
 
 Building software with AI agents often looks like this:
 

@@ -1,7 +1,13 @@
-<p align="center">
-  <strong>specly</strong><br>
-  <em>Spec-Driven Development scaffolding for AI agents</em>
-</p>
+                       
+                 _     
+ ___ ___ ___ ___| |_ _ 
+|_ -| . | -_|  _| | | |
+|___|  _|___|___|_|_  |
+    |_|           |___|
+
+
+**Specly** a Spec-Driven Development scaffolding for AI agents
+
 
 <p align="center">
   <a href="https://www.npmjs.com/package/specly"><img src="https://img.shields.io/npm/v/specly" alt="npm version"></a>

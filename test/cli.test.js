@@ -19,7 +19,7 @@ function tempDir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), "sdd-test-"));
 }
 
-test("generic: creates 4 spec files in specs/", () => {
+test("generic: creates 5 spec files in specs/", () => {
   const dir = tempDir();
   runSdd(dir, "--agent generic");
 
@@ -27,6 +27,7 @@ test("generic: creates 4 spec files in specs/", () => {
   assert.ok(fs.existsSync(path.join(specs, "requirements.md")));
   assert.ok(fs.existsSync(path.join(specs, "design.md")));
   assert.ok(fs.existsSync(path.join(specs, "tasks.md")));
+  assert.ok(fs.existsSync(path.join(specs, "verification.md")));
   assert.ok(fs.existsSync(path.join(specs, "steering.md")));
   assert.ok(fs.existsSync(path.join(specs, "how-to-use.md")));
 });

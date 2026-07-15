@@ -8,7 +8,12 @@
 const fs = require("fs");
 const path = require("path");
 
-const SPEC_FILES = ["requirements.md", "design.md", "tasks.md"];
+const SPEC_FILES = [
+  "requirements.md",
+  "design.md",
+  "tasks.md",
+  "verification.md",
+];
 const STEERING_FILE = "steering.md";
 const HOW_TO_USE_FILE = "how-to-use.md";
 
@@ -24,6 +29,8 @@ const AGENTS = {
       specsDir: "specs",
       agentDir: "specs",
       steeringInSpecs: true,
+      hooksDir: ".githooks",
+      skillsDir: "skills",
     }),
   },
 
@@ -44,6 +51,8 @@ const AGENTS = {
       specsDir: `.kiro/specs/${feature}`,
       agentDir: ".kiro",
       steeringInSpecs: false,
+      hooksDir: `.kiro/hooks`,
+      skillsDir: `.kiro/skills`,
     }),
   },
 
@@ -151,6 +160,12 @@ function resolvePaths(agentKey, feature, root) {
     ),
     howToUsePath: path.join(base, agentDir, HOW_TO_USE_FILE),
     steeringInSpecs: layout.steeringInSpecs,
+    hooksDir: layout.hooksDir
+      ? path.join(base, layout.hooksDir)
+      : null,
+    skillsDir: layout.skillsDir
+      ? path.join(base, layout.skillsDir)
+      : null,
     specFiles: SPEC_FILES,
     steeringFile: STEERING_FILE,
     howToUseFile: HOW_TO_USE_FILE,

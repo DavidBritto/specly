@@ -249,6 +249,18 @@ Run state and content-hash evidence are recorded atomically under `.specly/runs/
 
 Generated artifact paths, template fingerprints, ownership, and update policy are defined in the [artifact contract](./ARTIFACT-CONTRACT.md) and its [machine-readable fixture](./contracts/artifact-contract-v1.json).
 
+### Python CLI & Node-free distribution (Local Preview)
+
+A standalone Python CLI package is provided under [`python/`](./python/) for environments without Node.js.
+
+> **Availability & Evidence Status:** Local development only. The package is **not published** to PyPI, and package/command names remain provisional. Primary registry evidence confirms `specly` is currently unallocated on PyPI.
+
+- **Node-free operations:** `specly init`, `specly doctor`, `specly plan <feature>`, and `specly verify <feature>` execute using Python standard libraries and packaged assets without invoking Node.js, `npm`, or `npx`, and without creating a `package.json`.
+- **Contract parity:** Conforms to `artifact-contract-v1.json`, generating exact byte-for-byte matching SHA-256 artifacts across all 7 agent layouts.
+- **Interruption & overwrite safety:** Re-running initialization identifies canonical files as already complete and skips them; divergent or partial files are flagged with a warning and require explicit `--force` to overwrite.
+- **Asset synchronization:** `python3 python/scripts/sync_assets.py --check` prevents template drift between the canonical source files and packaged snapshots.
+- **Testing:** `PYTHONPATH=python/src python3 -m unittest discover -s python/tests` runs the unit, wheel smoke, and cross-runtime conformance suites.
+
 ---
 
 ## Documentation

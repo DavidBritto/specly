@@ -5,3 +5,8 @@ node_modules/
 boot.zip
 Bootcamp*
 .atl/
+__pycache__/
+*.pyc
+*.egg-info/
+python/build/
+python/dist/

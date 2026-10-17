@@ -374,3 +374,18 @@ test("fresh Node output conforms to the shared artifact contract", () => {
     }
   }
 });
+
+test("Node CLI commands remain compatible in projects coexisting with python packaging", () => {
+  const dir = tempDir();
+  // Simulate coexistence with python package layout
+  fs.mkdirSync(path.join(dir, "python"), { recursive: true });
+  fs.writeFileSync(path.join(dir, "pyproject.toml"), "[project]\nname = 'sample'\n");
+  const output = runSdd(dir, ["doctor"]);
+  assert.match(output, /Specly doctor — read-only readiness check/);
+  assert.match(output, /Runtime:\s+ready/);
+
+  const initOut = runSdd(dir, ["init", "--agent", "generic", "--feature", "coexist"]);
+  assert.match(initOut, /SDD initialized/);
+  assert.equal(fs.existsSync(path.join(dir, "specs", "requirements.md")), true);
+  assert.equal(fs.existsSync(path.join(dir, "package.json")), false);
+});

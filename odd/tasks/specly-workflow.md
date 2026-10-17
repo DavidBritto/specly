@@ -15,7 +15,7 @@ Specly 1.1.0 scaffolds SDD files but does not orchestrate tasks or verification.
 - No package publication, push, pull request, GitHub Pages activation, LinkedIn publication, cluster deployment, or credential use without separate authorization.
 - Default to no model provider or agent execution until configured and approved.
 - Technical artifacts use English.
-- Effective TDD: off (no project or session strict-TDD configuration found); source: repository mapping. Test runner: `npm test` (`node --test test/*.js`). Recheck if configuration appears.
+- Historical ODD S1–S3c TDD: off (no strict-TDD configuration existed during those slices). The later SDD handoff sets `strict_tdd: true` in `openspec/config.yaml` for future SDD implementation; `npm test` (`node --test test/*.js`) is the current Node runner. The Python runner remains to be selected when its test harness exists.
 - Delivery strategy: `ask-on-risk`; user selected `feature-branch-chain`. Estimated authored changes: more than 400 lines across the feature. The 400-line figure is a planning heuristic, not a reason to omit tests or compress code.
 
 ## Tasks
@@ -61,4 +61,5 @@ Specly 1.1.0 scaffolds SDD files but does not orchestrate tasks or verification.
 - S3b checks: writer reported focused CLI tests, `npm test`, and `git diff --check` passing on each slice, plus denied approval, approved write, duplicate-run refusal, and interruption/recovery smoke. Parent spot-check `npm test`, `git diff --check`, and npm pack dry-run passed on slice 5; the npm package includes `src/workflow.js`. No external command was executed, and receipt-driven review remains disabled.
 - S3c implementation: `verify <feature> --task <id>` compares declared action, target hash, and completed ledger, distinguishing unavailable evidence from failed checks without writes or external test execution. Commit: `4c1e763` (`feat(workflow): verify approved task evidence`); rollback boundary: revert this commit. Writer and parent `npm test` and `git diff --check` passed; writer also reported focused and no-write checks passing.
 - Running authored changed-line count: 347 in S1, 156 in S2, 144 in S3a, 263 in S3b1, 234 in S3b2, 123 in S3c, plus task-evidence updates; each intended PR slice remains below 400 authored lines. The chain strategy is `feature-branch-chain`.
-- Next step: commit this evidence update, then start S4 on a child branch after verifying PyPI naming and the current uv packaging contract.
+- SDD continuation handoff: `openspec/changes/specly-app-continuation/` now contains exploration, proposal, five capability specs, design, and S4–S8 tasks, mirrored to Engram. Reviewable documentation slices: `c769b50` (init/proposal), `a32e4b8` (Python/adapter specs), `20996bd` (site/copy specs), `7bdd987` (design/tasks), on child branches 07–10. The 823 authored documentation lines were split into four slices below 400 each. No remaining feature implementation or publication occurred during the SDD handoff.
+- Next step: use the SDD continuation tasks from the tip of `feat/specly-workflow-10-sdd-tasks`; begin S4 only after its evidence gates and with strict TDD. No Python package files exist yet.

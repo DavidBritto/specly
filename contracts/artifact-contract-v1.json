@@ -1,0 +1,76 @@
+{
+  "contract": "specly-generated-artifacts",
+  "contractVersion": "1.0.0",
+  "schemaVersion": 1,
+  "featurePlaceholder": "{feature}",
+  "artifacts": [
+    {
+      "id": "requirements",
+      "role": "feature specification",
+      "directory": "specsDir",
+      "file": "requirements.md",
+      "template": "src/templates/requirements.md",
+      "sha256": "e94b31549542afa380a0814e4b53e67f77393f6949fbc7addbdacec99f213365",
+      "ownership": "user"
+    },
+    {
+      "id": "design",
+      "role": "technical design",
+      "directory": "specsDir",
+      "file": "design.md",
+      "template": "src/templates/design.md",
+      "sha256": "e27dc44a125652c728674637be6da821355f48027cad76a1d5d88bbe9869bd87",
+      "ownership": "user"
+    },
+    {
+      "id": "tasks",
+      "role": "implementation tasks",
+      "directory": "specsDir",
+      "file": "tasks.md",
+      "template": "src/templates/tasks.md",
+      "sha256": "4566c01228d85a4c93f0b3a3e71ee36b46ae8e408434f0a38ac55cf644db3c4d",
+      "ownership": "user"
+    },
+    {
+      "id": "verification",
+      "role": "verification checklist",
+      "directory": "specsDir",
+      "file": "verification.md",
+      "template": "src/templates/verification.md",
+      "sha256": "eb17232f8316d97fae36432600adbbfedc1b2808bb68a052951b69f5164a23ef",
+      "ownership": "user"
+    },
+    {
+      "id": "steering",
+      "role": "persistent project context",
+      "directory": "steeringDir",
+      "file": "steering.md",
+      "template": "src/templates/steering.md",
+      "sha256": "4607049ab708123603c0fc627eab4bf7d4eaf3eea2e524f1b8c68178cf6ac2b1",
+      "ownership": "user"
+    },
+    {
+      "id": "guide",
+      "role": "usage documentation",
+      "directory": "agentDir",
+      "file": "how-to-use.md",
+      "template": "how-to-use.md",
+      "sha256": "0d09f70b6f6965509589b6a424c7d3f14a42cf3df134b1b4ed2061d5a77956e5",
+      "ownership": "user"
+    }
+  ],
+  "layouts": {
+    "generic": { "specsDir": "specs", "steeringDir": "specs", "agentDir": "specs" },
+    "cursor": { "specsDir": ".cursor/specs/{feature}", "steeringDir": ".cursor", "agentDir": ".cursor" },
+    "kiro": { "specsDir": ".kiro/specs/{feature}", "steeringDir": ".kiro", "agentDir": ".kiro" },
+    "vscode": { "specsDir": ".vscode/specs/{feature}", "steeringDir": ".vscode", "agentDir": ".vscode" },
+    "antigravity": { "specsDir": ".agent/specs/{feature}", "steeringDir": ".agent", "agentDir": ".agent" },
+    "windsurf": { "specsDir": ".windsurf/specs/{feature}", "steeringDir": ".windsurf", "agentDir": ".windsurf" },
+    "claude": { "specsDir": ".claude/specs/{feature}", "steeringDir": ".claude", "agentDir": ".claude" }
+  },
+  "overwritePolicy": {
+    "default": "skip-existing",
+    "explicitForce": "replace-existing",
+    "migration": "never-overwrite-user-owned-artifacts-without-explicit-force"
+  }
+}

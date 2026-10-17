@@ -8,6 +8,8 @@
   },
   "files": [
     "src/",
+    "contracts/",
+    "ARTIFACT-CONTRACT.md",
     "how-to-use.md",
     "README.md",
     "LICENSE"

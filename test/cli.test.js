@@ -3,8 +3,11 @@ const assert = require("node:assert/strict");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
+const crypto = require("crypto");
 const CLI = path.join(__dirname, "..", "src", "index.js");
 const { main } = require(CLI);
+const CONTRACT = require("../contracts/artifact-contract-v1.json");
+const { listAgents, resolvePaths } = require("../src/agents");
 
 function runSdd(cwd, args = [], extraEnv = {}) {
   const previousCwd = process.cwd();
@@ -130,4 +133,58 @@ test("doctor reports readiness without changing files or opening an IDE", () => 
   assert.match(output, /Templates:\s+ready/);
   assert.deepEqual(fs.readdirSync(target).sort(), before);
   assert.equal(fs.existsSync(marker), false);
+});
+
+test("artifact contract fixture matches every Node template and agent layout", () => {
+  assert.equal(CONTRACT.contract, "specly-generated-artifacts");
+  assert.equal(CONTRACT.schemaVersion, 1);
+  assert.equal(CONTRACT.contractVersion, "1.0.0");
+  assert.deepEqual(Object.keys(CONTRACT.layouts).sort(), listAgents().sort());
+
+  for (const artifact of CONTRACT.artifacts) {
+    const template = path.join(__dirname, "..", artifact.template);
+    const digest = crypto
+      .createHash("sha256")
+      .update(fs.readFileSync(template))
+      .digest("hex");
+    assert.equal(digest, artifact.sha256, `${artifact.id} template fingerprint`);
+  }
+
+  for (const [agent, expected] of Object.entries(CONTRACT.layouts)) {
+    const resolved = resolvePaths(agent, "contract-check", "/project");
+    assert.equal(
+      path.relative("/project", resolved.specsDir).split(path.sep).join("/"),
+      expected.specsDir.replace("{feature}", "contract-check"),
+      `${agent} specs path`
+    );
+    assert.equal(
+      path.relative("/project", path.dirname(resolved.steeringPath)).split(path.sep).join("/"),
+      expected.steeringDir,
+      `${agent} steering path`
+    );
+    assert.equal(
+      path.relative("/project", path.dirname(resolved.howToUsePath)).split(path.sep).join("/"),
+      expected.agentDir,
+      `${agent} guide path`
+    );
+  }
+});
+
+test("fresh Node output conforms to the shared artifact contract", () => {
+  for (const agent of ["generic", "cursor"]) {
+    const dir = tempDir();
+    if (agent === "cursor") fs.mkdirSync(path.join(dir, ".cursor"));
+    const feature = "contract-check";
+    runSdd(dir, ["init", "--agent", agent, "--feature", feature]);
+
+    const layout = CONTRACT.layouts[agent];
+    for (const artifact of CONTRACT.artifacts) {
+      const directory = layout[artifact.directory].replace("{feature}", feature);
+      const generated = fs.readFileSync(
+        path.join(dir, directory, artifact.file)
+      );
+      const digest = crypto.createHash("sha256").update(generated).digest("hex");
+      assert.equal(digest, artifact.sha256, `${agent} ${artifact.id} output`);
+    }
+  }
 });

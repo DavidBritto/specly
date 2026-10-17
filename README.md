@@ -206,6 +206,8 @@ Options for the default/init command:
 
 `doctor` reports the Node.js version requirement, detected agent (or generic fallback), and bundled template availability. It does not write project files or launch an IDE. Initialization remains safe by default: existing files are skipped unless `--force` is provided.
 
+Generated artifact paths, template fingerprints, ownership, and update policy are defined in the [artifact contract](./ARTIFACT-CONTRACT.md) and its [machine-readable fixture](./contracts/artifact-contract-v1.json).
+
 ---
 
 ## Documentation

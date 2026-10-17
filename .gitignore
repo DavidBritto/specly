@@ -1,6 +1,7 @@
 node_modules/
 .DS_Store
 *.log
-specs/
+/specs/
 boot.zip
 Bootcamp*
+.atl/

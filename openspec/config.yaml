@@ -1,0 +1,59 @@
+schema: spec-driven
+
+context: |
+  Project: Specly, a Node.js CommonJS CLI for scaffolding spec-driven development artifacts.
+  Architecture: CLI entry point delegates agent/layout handling, IDE integration, and workflow operations to modules under src/.
+  Runtime: Node.js >=18.
+  Testing: Node.js built-in node:test suite; run `npm test` from the workspace root.
+  Style: JavaScript with CommonJS modules; no separate lint, type-check, or format command was detected.
+
+strict_tdd: true
+
+projects:
+  - path: "."
+    stack: "Node.js >=18, JavaScript (CommonJS)"
+    test_command: "npm test"
+    framework: "node:test"
+    test_layers: ["CLI/workflow integration"]
+    coverage_command: null
+    quality_tools:
+      lint: null
+      type_check: null
+      format: null
+
+testing:
+  strict_tdd: true
+  test_command: "npm test"
+  projects:
+    - path: "."
+      stack: "Node.js >=18, JavaScript (CommonJS)"
+      test_command: "npm test"
+      framework: "node:test"
+      test_layers: ["CLI/workflow integration"]
+      coverage_command: null
+      quality_tools:
+        lint: null
+        type_check: null
+        format: null
+
+rules:
+  proposal:
+    - State problem, intended outcome, scope, constraints, and measurable acceptance criteria.
+  specs:
+    - Use Given/When/Then scenarios and RFC 2119 keywords where requirements need normative force.
+  design:
+    - Document affected modules, data flow, failure behavior, and rationale for non-obvious choices.
+  tasks:
+    - Keep tasks dependency-aware, independently verifiable, and small enough to complete in a work session.
+  apply:
+    guidelines:
+      - Follow existing CommonJS and module-boundary conventions.
+      - Preserve safety properties for filesystem writes and read-only planning/verification.
+    tdd: true
+    test_command: "npm test"
+  verify:
+    test_command: "npm test"
+    build_command: null
+    coverage_threshold: null
+  archive:
+    - Preserve archived change artifacts as an audit trail.

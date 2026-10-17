@@ -70,9 +70,9 @@ The Python test runner is intentionally unresolved: select it only after the Pyt
 
 ## Phase 5: S8 — Release-grounded launch copy
 
-- [ ] 5.1 Create `content.md` with a primary announcement and a shorter LinkedIn draft. Use `site/claims.json` as the shared evidence source where available; label local, planned, unavailable, or unverified capabilities accurately, and keep the artifact explicitly a draft.
-- [ ] 5.2 Add local checks or a review checklist for every install command, package/version, feature claim, and live URL in `content.md`. Omit or mark provisional anything not backed by observed release evidence; package metadata, local builds, roadmap, and branch code are not publication evidence. Do not probe live URLs without separate authorization.
-- [ ] 5.3 Read back both drafts and reconcile each material claim with its exact evidence locator. Keep the copy non-publish-ready while any claim or destination remains unverified. Posting, scheduling, remote editing, credential use, and publication require later separate explicit authorization naming the destination, operation, and credential/session.
+- [x] 5.1 Create `content.md` with a primary announcement and a shorter LinkedIn draft. Use `site/claims.json` as the shared evidence source where available; label local, planned, unavailable, or unverified capabilities accurately, and keep the artifact explicitly a draft.
+- [x] 5.2 Add local checks or a review checklist for every install command, package/version, feature claim, and live URL in `content.md`. Omit or mark provisional anything not backed by observed release evidence; package metadata, local builds, roadmap, and branch code are not publication evidence. Do not probe live URLs without separate authorization.
+- [x] 5.3 Read back both drafts and reconcile each material claim with its exact evidence locator. Keep the copy non-publish-ready while any claim or destination remains unverified. Posting, scheduling, remote editing, credential use, and publication require later separate explicit authorization naming the destination, operation, and credential/session.
 
 ## Implementation and verification gates
 

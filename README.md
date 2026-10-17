@@ -168,8 +168,9 @@ npx specly plan auth
 # Inspect generated files and task/checklist progress without running tests
 npx specly verify auth
 
-# Preview one manifest-declared task action without executing it
+# Inspect and explicitly approve one manifest-declared file creation
 npx specly plan auth --task 1.1
+npx specly run auth --task 1.1 --approve <approval-digest>
 ```
 
 **Global install (optional):**
@@ -205,6 +206,8 @@ Commands:
   init                    Create SDD files (default; legacy syntax remains supported)
   doctor                  Check Node.js, agent, and template readiness (read-only)
   plan <feature>          List proposed local writes and other effects (read-only)
+  run <feature>           Apply one digest-approved manifest write-file action
+  recover <feature>       Diagnose/reconcile an interrupted write action
   verify <feature>        Report local artifact and checklist evidence (read-only)
 
 Options for the default/init command:
@@ -219,9 +222,9 @@ Options for the default/init command:
 
 `plan <feature>` lists the feature's expected spec files, steering file, and guide, marking existing files for preservation and missing files as proposed writes only if `init` is separately run. It also states dependency, external-command, permission, network, credential, and IDE effects; it performs none of them. `verify <feature>` reports whether local spec files are readable and whether task/verification checkboxes are complete. Requirements/design acceptance evidence is unavailable unless checked by project-specific validation, and external test execution is skipped. Progress remains durably represented by `tasks.md`; the verify report itself is not saved.
 
-### Task-specific action planning (read-only)
+### Approved local file actions (limited preview)
 
-`plan <feature> --task <id>` reads a user-authored manifest at `.specly/actions/<feature>.json`. It does **not** execute task prose, invoke a model, run shell commands, install dependencies, or write files.
+The first `run` implementation accepts only a user-authored manifest at `.specly/actions/<feature>.json`. It does **not** execute task prose, invoke a model, run shell commands, install dependencies, or provide an operating-system sandbox.
 
 ```json
 {
@@ -238,7 +241,9 @@ Options for the default/init command:
 }
 ```
 
-The referenced task ID must exist in the feature's `tasks.md`. Planning shows the target, content SHA-256, parent directories, future ledger/lock effects, and a deterministic approval digest bound to the project root and current manifest/task bytes. Existing targets, traversal, reserved `.git`/`.specly` paths, and symlink ancestors are rejected. This preview alone changes nothing; execution is a separate explicit workflow step.
+The referenced task ID must exist in the feature's `tasks.md`. Planning shows the exact target, content SHA-256, created directories, effects, and an approval digest bound to the project root and current manifest/task bytes. Review that plan, then pass the exact digest to `run`. The action creates **one new file only**; existing targets, traversal, reserved `.git`/`.specly` paths, and symlink ancestors are rejected. The task checkbox is never changed.
+
+Run state and content-hash evidence are recorded atomically under `.specly/runs/`, separate from user-owned specification files. If a process is interrupted, Specly will not retry automatically. Inspect with `specly recover auth --task 1.1`; only after confirming the recorded process has stopped, `--confirm-stopped` reconciles an absent target as interrupted or an exact matching target as completed. A new execution still requires a fresh explicit `run` invocation with approval. This is an auditable local write boundary, not a sandbox against an approved process or concurrent host activity.
 
 Generated artifact paths, template fingerprints, ownership, and update policy are defined in the [artifact contract](./ARTIFACT-CONTRACT.md) and its [machine-readable fixture](./contracts/artifact-contract-v1.json).
 

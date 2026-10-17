@@ -203,7 +203,26 @@ test("task plan hashes the exact declared write and stays read-only", () => {
   assert.equal(fs.existsSync(path.join(dir, "new", "hello.txt")), false);
 });
 
-test("task planning rejects unknown task IDs and path traversal in action manifest", () => {
+test("run requires matching approval and creates exactly one declared file", () => {
+  const dir = actionProject();
+  const output = runSdd(dir, ["plan", "auth", "--task", "1.1"]);
+  const digest = output.match(/Approval digest: ([a-f0-9]{64})/)[1];
+  assert.throws(() => runSdd(dir, ["run", "auth", "--task", "1.1", "--approve", "0".repeat(64)]), /Approval digest mismatch/);
+  assert.equal(fs.existsSync(path.join(dir, "new", "hello.txt")), false);
+  assert.equal(fs.existsSync(path.join(dir, ".specly", "runs")), false);
+
+  const runOutput = runSdd(dir, ["run", "auth", "--task", "1.1", "--approve", digest]);
+  assert.match(runOutput, /Completed task 1\.1: created new\/hello\.txt/);
+  assert.equal(fs.readFileSync(path.join(dir, "new", "hello.txt"), "utf8"), "hello\n");
+  const state = JSON.parse(fs.readFileSync(path.join(dir, ".specly", "runs", "auth", "1.1.json"), "utf8"));
+  assert.equal(state.latestStatus, "completed");
+  assert.equal(state.attempts[0].evidence.contentSha256, require("crypto").createHash("sha256").update("hello\n").digest("hex"));
+  assert.match(fs.readFileSync(path.join(dir, "specs", "tasks.md"), "utf8"), /- \[ \] 1\.1/);
+
+  assert.throws(() => runSdd(dir, ["run", "auth", "--task", "1.1", "--approve", digest]), /already exists/);
+});
+
+test("run rejects unknown task IDs and path traversal in action manifest", () => {
   const missingTask = actionProject();
   assert.throws(() => runSdd(missingTask, ["plan", "auth", "--task", "9.9"]), /not present in .*tasks\.md/);
   const traversal = actionProject("../outside.txt");
@@ -222,6 +241,27 @@ test("action planner rejects existing targets and symlink ancestors", () => {
   fs.symlinkSync(outside, path.join(symlinked, "outside"), "dir");
   assert.throws(() => runSdd(symlinked, ["plan", "auth", "--task", "1.1"]), /Symbolic links are not allowed/);
   assert.equal(fs.existsSync(path.join(outside, "new.txt")), false);
+});
+
+test("recovery diagnoses interruption and requires explicit reconciliation before retry", () => {
+  const dir = actionProject();
+  const output = runSdd(dir, ["plan", "auth", "--task", "1.1"]);
+  const digest = output.match(/Approval digest: ([a-f0-9]{64})/)[1];
+  const runs = path.join(dir, ".specly", "runs", "auth");
+  fs.mkdirSync(runs, { recursive: true });
+  fs.writeFileSync(path.join(runs, "1.1.json"), JSON.stringify({
+    schemaVersion: 1, feature: "auth", taskId: "1.1", latestStatus: "running",
+    attempts: [{ approvalDigest: digest, action: "write-file", target: "new/hello.txt", contentSha256: require("crypto").createHash("sha256").update("hello\n").digest("hex"), status: "running", startedAt: "2026-01-01T00:00:00.000Z" }],
+  }));
+  fs.writeFileSync(path.join(runs, "1.1.lock"), JSON.stringify({ pid: 99999999, startedAt: "2026-01-01T00:00:00.000Z" }));
+
+  assert.match(runSdd(dir, ["recover", "auth", "--task", "1.1"]), /Possible interruption: no automatic retry/);
+  assert.equal(fs.existsSync(path.join(dir, "new", "hello.txt")), false);
+  assert.match(runSdd(dir, ["recover", "auth", "--task", "1.1", "--confirm-stopped"]), /Reconciled state as interrupted/);
+  assert.equal(fs.existsSync(path.join(dir, ".specly", "runs", "auth", "1.1.lock")), false);
+
+  runSdd(dir, ["run", "auth", "--task", "1.1", "--approve", digest]);
+  assert.equal(fs.readFileSync(path.join(dir, "new", "hello.txt"), "utf8"), "hello\n");
 });
 
 test("artifact contract fixture matches every Node template and agent layout", () => {

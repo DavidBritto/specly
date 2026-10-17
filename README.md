@@ -222,6 +222,8 @@ Options for the default/init command:
 
 `plan <feature>` lists the feature's expected spec files, steering file, and guide, marking existing files for preservation and missing files as proposed writes only if `init` is separately run. It also states dependency, external-command, permission, network, credential, and IDE effects; it performs none of them. `verify <feature>` reports whether local spec files are readable and whether task/verification checkboxes are complete. Requirements/design acceptance evidence is unavailable unless checked by project-specific validation, and external test execution is skipped. Progress remains durably represented by `tasks.md`; the verify report itself is not saved.
 
+`verify <feature> --task <id>` is a separate read-only evidence report for one manifest-declared action. It compares the action and task ID with the current manifest/tasks file, hashes the current target bytes, and checks the matching durable run ledger. A matching target without a completed, matching ledger is **not** evidence of an approved run. A completed ledger with a missing or changed target fails verification. External test commands are skipped, requirements/design acceptance remains unavailable, and the report never changes task checkboxes or ledger state.
+
 ### Approved local file actions (limited preview)
 
 The first `run` implementation accepts only a user-authored manifest at `.specly/actions/<feature>.json`. It does **not** execute task prose, invoke a model, run shell commands, install dependencies, or provide an operating-system sandbox.

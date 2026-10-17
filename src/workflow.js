@@ -164,6 +164,61 @@ function printTaskPlan(feature, taskId, root) {
   console.log(`Approval digest: ${op.approvalDigest}`);
 }
 
+function printTaskVerify(feature, taskId, rootArg) {
+  const root = projectRoot(rootArg);
+  const checks = [];
+  let op;
+  try {
+    op = loadAction(root, feature, taskId, { targetMayExist: true });
+    checks.push({ label: "declared action and task ID are valid", status: "passed" });
+  } catch (error) {
+    checks.push({ label: `declared action and task ID (${error.message})`, status: "unavailable" });
+  }
+
+  let targetDigest = null;
+  if (op) {
+    try {
+      targetDigest = sha256(fs.readFileSync(op.target));
+      checks.push({ label: `target ${op.targetRelative} SHA-256 ${targetDigest}`, status: targetDigest === op.contentDigest ? "passed" : "failed" });
+    } catch (error) {
+      checks.push({ label: `target ${op.targetRelative} (${error.code === "ENOENT" ? "missing" : `unreadable: ${error.message}`})`, status: error.code === "ENOENT" ? "failed" : "unavailable" });
+    }
+  }
+
+  let state = null;
+  try { state = readState(root, feature, taskId); }
+  catch (error) { checks.push({ label: `durable run ledger (${error.message})`, status: "unavailable" }); }
+  if (!checks.some((check) => check.label.startsWith("durable run ledger"))) {
+    if (!state) {
+      checks.push({ label: "durable run ledger: no completed run evidence; target bytes alone do not prove an approved run", status: "unavailable" });
+    } else {
+      const last = state.attempts[state.attempts.length - 1];
+      if (state.latestStatus === "completed") {
+        const ledgerMatches = Boolean(op && last && last.status === "completed" &&
+          last.approvalDigest === op.approvalDigest && last.action === "write-file" &&
+          last.target === op.targetRelative && last.contentSha256 === op.contentDigest &&
+          last.evidence && last.evidence.targetExists === true &&
+          last.evidence.contentSha256 === op.contentDigest);
+        const targetMatches = Boolean(op && targetDigest === op.contentDigest);
+        checks.push({ label: "completed run ledger matches current manifest, task, and approval", status: ledgerMatches && targetMatches ? "passed" : "failed" });
+      } else if (state.latestStatus === "failed") {
+        checks.push({ label: "durable run ledger records a failed attempt", status: "failed" });
+      } else {
+        checks.push({ label: `durable run ledger has unresolved status ${state.latestStatus || "unknown"}; inspect with specly recover`, status: "unavailable" });
+      }
+    }
+  }
+  checks.push({ label: "external test commands (not run)", status: "skipped" });
+  checks.push({ label: "requirements/design acceptance (not assessed)", status: "unavailable" });
+
+  const statuses = ["passed", "failed", "skipped", "unavailable"];
+  const counts = Object.fromEntries(statuses.map((status) => [status, checks.filter((check) => check.status === status).length]));
+  console.log(`Specly task verify — ${feature} / ${taskId} (read-only; no commands run)`);
+  for (const check of checks) console.log(`  ${check.status.toUpperCase().padEnd(11)} ${check.label}`);
+  console.log(`\nSummary: ${counts.passed} passed, ${counts.failed} failed, ${counts.skipped} skipped, ${counts.unavailable} unavailable.`);
+  console.log("No task checkbox or run ledger was changed; this report is not persisted.");
+}
+
 function stateRelative(feature, taskId) { return `.specly/runs/${feature}/${taskId}.json`; }
 function lockRelative(feature, taskId) { return `.specly/runs/${feature}/${taskId}.lock`; }
 
@@ -317,4 +372,4 @@ function printRecovery(feature, taskId, rootArg, confirmStopped = false) {
   console.log(`Reconciled state as ${last.status}. ${actualDigest ? "No additional target write occurred during recovery." : "A new explicit plan and run approval are required to retry."}`);
 }
 
-module.exports = { printTaskPlan, runTask, printRecovery };
+module.exports = { printTaskPlan, printTaskVerify, runTask, printRecovery };

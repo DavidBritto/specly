@@ -11,7 +11,7 @@ const {
   STEERING_FILE,
 } = require("./agents");
 const { deployAndOpen } = require("./ide");
-const { printTaskPlan, runTask, printRecovery } = require("./workflow");
+const { printTaskPlan, printTaskVerify, runTask, printRecovery } = require("./workflow");
 
 const TEMPLATE_DIR = path.join(__dirname, "templates");
 
@@ -246,8 +246,9 @@ function main(argv = process.argv, root = process.cwd()) {
       if (!args.taskId || args.approval) throw new Error("Usage: specly recover <feature> --task <id> [--confirm-stopped]");
       printRecovery(args.feature, args.taskId, root, args.confirmStopped);
     } else {
-      if (args.taskId || args.approval || args.confirmStopped) throw new Error("verify accepts only a feature name.");
-      printVerify(args.feature, root);
+      if (args.approval || args.confirmStopped) throw new Error("verify accepts a feature name and optional --task <id>.");
+      if (args.taskId) printTaskVerify(args.feature, args.taskId, root);
+      else printVerify(args.feature, root);
     }
     return;
   }

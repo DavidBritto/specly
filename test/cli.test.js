@@ -222,6 +222,63 @@ test("run requires matching approval and creates exactly one declared file", () 
   assert.throws(() => runSdd(dir, ["run", "auth", "--task", "1.1", "--approve", digest]), /already exists/);
 });
 
+test("task verify passes only when the target and completed ledger match, without writes", () => {
+  const dir = actionProject();
+  const plan = runSdd(dir, ["plan", "auth", "--task", "1.1"]);
+  const digest = plan.match(/Approval digest: ([a-f0-9]{64})/)[1];
+  runSdd(dir, ["run", "auth", "--task", "1.1", "--approve", digest]);
+  const files = (root) => Object.fromEntries(fs.readdirSync(root, { recursive: true }).sort().map((name) => {
+    const file = path.join(root, name);
+    return [name, fs.statSync(file).isFile() ? crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex") : "directory"];
+  }));
+  const before = files(dir);
+  const output = runSdd(dir, ["verify", "auth", "--task", "1.1"]);
+  assert.match(output, /PASSED\s+declared action and task ID are valid/);
+  assert.match(output, /PASSED\s+target new\/hello\.txt SHA-256/);
+  assert.match(output, /PASSED\s+completed run ledger matches current manifest, task, and approval/);
+  assert.match(output, /SKIPPED\s+external test commands/);
+  assert.match(output, /UNAVAILABLE\s+requirements\/design acceptance/);
+  assert.match(output, /No task checkbox or run ledger was changed/);
+  assert.deepEqual(files(dir), before);
+});
+
+test("matching target without a completed ledger is not reported as a completed run", () => {
+  const dir = actionProject();
+  fs.mkdirSync(path.join(dir, "new"));
+  fs.writeFileSync(path.join(dir, "new", "hello.txt"), "hello\n");
+  const before = fs.readdirSync(dir, { recursive: true }).sort();
+  const output = runSdd(dir, ["verify", "auth", "--task", "1.1"]);
+  assert.match(output, /PASSED\s+target new\/hello\.txt SHA-256/);
+  assert.match(output, /UNAVAILABLE\s+durable run ledger: no completed run evidence; target bytes alone do not prove an approved run/);
+  assert.doesNotMatch(output, /PASSED\s+completed run ledger/);
+  assert.deepEqual(fs.readdirSync(dir, { recursive: true }).sort(), before);
+});
+
+test("task verify fails when a completed ledger target is missing or changed", () => {
+  const dir = actionProject();
+  const plan = runSdd(dir, ["plan", "auth", "--task", "1.1"]);
+  const digest = plan.match(/Approval digest: ([a-f0-9]{64})/)[1];
+  runSdd(dir, ["run", "auth", "--task", "1.1", "--approve", digest]);
+  fs.writeFileSync(path.join(dir, "new", "hello.txt"), "changed\n");
+  let output = runSdd(dir, ["verify", "auth", "--task", "1.1"]);
+  assert.match(output, /FAILED\s+target new\/hello\.txt SHA-256/);
+  assert.match(output, /FAILED\s+completed run ledger matches current manifest, task, and approval/);
+  fs.unlinkSync(path.join(dir, "new", "hello.txt"));
+  output = runSdd(dir, ["verify", "auth", "--task", "1.1"]);
+  assert.match(output, /FAILED\s+target new\/hello\.txt \(missing\)/);
+  assert.match(output, /FAILED\s+completed run ledger matches current manifest, task, and approval/);
+});
+
+test("task verify reports unavailable when the declared action cannot be read", () => {
+  const dir = actionProject();
+  fs.unlinkSync(path.join(dir, ".specly", "actions", "auth.json"));
+  const before = fs.readdirSync(dir, { recursive: true }).sort();
+  const output = runSdd(dir, ["verify", "auth", "--task", "1.1"]);
+  assert.match(output, /UNAVAILABLE\s+declared action and task ID \(ENOENT:/);
+  assert.match(output, /UNAVAILABLE\s+durable run ledger: no completed run evidence/);
+  assert.deepEqual(fs.readdirSync(dir, { recursive: true }).sort(), before);
+});
+
 test("run rejects unknown task IDs and path traversal in action manifest", () => {
   const missingTask = actionProject();
   assert.throws(() => runSdd(missingTask, ["plan", "auth", "--task", "9.9"]), /not present in .*tasks\.md/);

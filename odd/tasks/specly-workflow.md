@@ -20,7 +20,7 @@ Specly 1.1.0 scaffolds SDD files but does not orchestrate tasks or verification.
 
 ## Tasks
 
-- [ ] **S1 — Preserve and extend the npm CLI.** Capture baseline behavior, add explicit `init` and read-only `doctor`, retain legacy aliases and skip/force semantics, and test Python-project initialization without `package.json`. Route: delegated; trigger: changes to CLI, tests, and docs (2+ non-trivial files). Checks: focused CLI tests, `npm test`, doctor read-only scenario.
+- [x] **S1 — Preserve and extend the npm CLI.** Capture baseline behavior, add explicit `init` and read-only `doctor`, retain legacy aliases and skip/force semantics, and test Python-project initialization without `package.json`. Route: delegated; trigger: changes to CLI, tests, and docs (2+ non-trivial files). Checks: focused CLI tests, `npm test`, doctor read-only scenario.
 - [ ] **S2 — Stabilize artifact contract.** Version generated artifacts, document ownership and migration, add cross-runtime conformance fixtures. Route: delegated; trigger: templates, tests, and docs. Checks: fixtures and `npm test`.
 - [ ] **S3 — Add controlled local workflow.** Implement `plan`, approved task execution, `verify`, durable progress, and interruption recovery. Route: delegated; trigger: multiple modules and tests. Checks: unit/integration tests and one end-to-end task.
 - [ ] **S4 — Add Node-free distribution.** Verify PyPI naming, implement Python CLI without an npx dependency, and test equivalent artifacts on supported platforms. Route: delegated; trigger: new package, fixtures, docs. Checks: Python package build, CLI smoke tests, cross-runtime conformance.
@@ -42,8 +42,8 @@ Specly 1.1.0 scaffolds SDD files but does not orchestrate tasks or verification.
 - Tracker branch: `feat/specly-workflow` (created from `main`; no tracker PR opened).
 - PR slice 1 branch: `feat/specly-workflow-01-cli`, based on the tracker branch; intended PR base is `feat/specly-workflow`. Future slices will branch from the prior child. No PRs have been created.
 - Baseline exploration: current CLI parses bare positional tokens as agents; `doctor` must be routed before legacy parsing. Existing tests disable IDE launch with `SDD_NO_OPEN=1`.
-- S1 implementation: `src/index.js`, `test/cli.test.js`, and `README.md` now contain explicit `init`, read-only `doctor`, compatibility coverage, and documentation. Checkbox remains open until commit and review evidence are recorded.
+- S1 implementation: `src/index.js`, `test/cli.test.js`, and `README.md` now contain explicit `init`, read-only `doctor`, compatibility coverage, and documentation. Work-unit commit: `2f3d046` (`feat(cli): add explicit init and read-only doctor`). Rollback boundary: revert that work-unit commit; it also contains the initial plan and tracker document.
 - S1 checks: writer reported focused CLI tests, `npm test`, manual doctor from a temporary Python project with unchanged target files, and `git diff --check` passed. Parent spot-check `npm test` and `git diff --check` also passed. The writer's pre-edit baseline could not run because sandbox policy returned `EPERM` for subprocess spawning; tests now call the exported CLI entry point in-process.
-- Commits and review outcomes: pending. Receipt-driven development is on by global setting.
-- Running authored changed-line count: pending first work-unit commit. The chain strategy is resolved as `feature-branch-chain`.
-- Next step: commit the S1 work unit, assess/review the committed candidate as required, then advance to S2.
+- S1 review outcome: native assessment was high risk (`process_boundary` in `src/index.js`). User granted candidate review, but all four reviewer captures were unavailable because nested Codex could not initialize on a read-only filesystem. No approval or review findings were produced. At the user's explicit request, receipt-driven development was disabled for this clone; subsequent work follows ordinary checks without review receipts.
+- Running authored changed-line count: 347 in work-unit commit `2f3d046`, plus this tracker update. The chain strategy is `feature-branch-chain`.
+- Next step: commit this evidence update, create the next child branch from `feat/specly-workflow-01-cli`, and implement S2.

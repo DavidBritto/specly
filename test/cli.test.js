@@ -135,6 +135,46 @@ test("doctor reports readiness without changing files or opening an IDE", () => 
   assert.equal(fs.existsSync(marker), false);
 });
 
+test("plan enumerates effects without writing to the target project", () => {
+  const dir = tempDir();
+  fs.mkdirSync(path.join(dir, "specs"));
+  fs.writeFileSync(path.join(dir, "specs", "requirements.md"), "keep me");
+  const before = fs.readdirSync(path.join(dir, "specs")).sort();
+
+  const output = runSdd(dir, ["plan", "auth"]);
+
+  assert.match(output, /read-only; nothing is executed/);
+  assert.match(output, /preserve existing file: specs\/requirements\.md/);
+  assert.match(output, /create if init is separately approved: specs\/design\.md/);
+  assert.match(output, /Dependency changes: none/);
+  assert.match(output, /External commands: none/);
+  assert.match(output, /Network, credentials, and IDE launch: none/);
+  assert.deepEqual(fs.readdirSync(path.join(dir, "specs")).sort(), before);
+  assert.equal(fs.existsSync(path.join(dir, "specs", "auth")), false);
+});
+
+test("verify reports only observable artifact and checklist evidence without writes", () => {
+  const dir = tempDir();
+  runSdd(dir, ["init", "--agent", "generic", "--feature", "auth"]);
+  const before = fs.readdirSync(dir).sort();
+
+  const output = runSdd(dir, ["verify", "auth"]);
+
+  assert.match(output, /PASSED\s+requirements\.md exists and is readable/);
+  assert.match(output, /FAILED\s+tasks\.md checklist is complete/);
+  assert.match(output, /FAILED\s+verification\.md checklist is complete/);
+  assert.match(output, /UNAVAILABLE\s+requirements\/design acceptance evidence/);
+  assert.match(output, /SKIPPED\s+External test commands/);
+  assert.match(output, /This report is not persisted/);
+  assert.deepEqual(fs.readdirSync(dir).sort(), before);
+});
+
+test("plan and verify reject unsafe feature path tokens", () => {
+  const dir = tempDir();
+  assert.throws(() => runSdd(dir, ["plan", "../outside"]), /Usage: specly/);
+  assert.throws(() => runSdd(dir, ["verify", "auth/../../outside"]), /Usage: specly/);
+});
+
 test("artifact contract fixture matches every Node template and agent layout", () => {
   assert.equal(CONTRACT.contract, "specly-generated-artifacts");
   assert.equal(CONTRACT.schemaVersion, 1);

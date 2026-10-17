@@ -161,6 +161,12 @@ npx specly --list
 
 # Check local readiness without changing files or opening an IDE
 npx specly doctor
+
+# Preview the local files and effects a feature would require
+npx specly plan auth
+
+# Inspect generated files and task/checklist progress without running tests
+npx specly verify auth
 ```
 
 **Global install (optional):**
@@ -195,6 +201,8 @@ npx specly doctor
 Commands:
   init                    Create SDD files (default; legacy syntax remains supported)
   doctor                  Check Node.js, agent, and template readiness (read-only)
+  plan <feature>          List proposed local writes and other effects (read-only)
+  verify <feature>        Report local artifact and checklist evidence (read-only)
 
 Options for the default/init command:
   -a, --agent <name>      Target agent
@@ -205,6 +213,8 @@ Options for the default/init command:
 ```
 
 `doctor` reports the Node.js version requirement, detected agent (or generic fallback), and bundled template availability. It does not write project files or launch an IDE. Initialization remains safe by default: existing files are skipped unless `--force` is provided.
+
+`plan <feature>` lists the feature's expected spec files, steering file, and guide, marking existing files for preservation and missing files as proposed writes only if `init` is separately run. It also states dependency, external-command, permission, network, credential, and IDE effects; it performs none of them. `verify <feature>` reports whether local spec files are readable and whether task/verification checkboxes are complete. Requirements/design acceptance evidence is unavailable unless checked by project-specific validation, and external test execution is skipped. Progress remains durably represented by `tasks.md`; the verify report itself is not saved.
 
 Generated artifact paths, template fingerprints, ownership, and update policy are defined in the [artifact contract](./ARTIFACT-CONTRACT.md) and its [machine-readable fixture](./contracts/artifact-contract-v1.json).
 

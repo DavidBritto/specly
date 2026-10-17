@@ -47,10 +47,14 @@ Usage:
   npx specly [options]
   npx specly init [options]
   npx specly doctor
+  npx specly plan <feature>
+  npx specly verify <feature>
 
 Commands:
   init                    Create the SDD files (default; legacy syntax remains supported)
   doctor                  Check runtime, agent, and template readiness without changing files
+  plan <feature>          Show proposed local writes and effects without executing them
+  verify <feature>        Inspect local artifacts and report observed workflow evidence
 
 Options:
   -a, --agent <name>      Target agent (${agents})
@@ -65,6 +69,88 @@ Examples:
   npx specly --agent kiro -n payments
   npx specly --agent generic
 `);
+}
+
+function parseWorkflowArgs(argv) {
+  let feature = null;
+  for (let i = 3; i < argv.length; i++) {
+    if (argv[i] === "--feature" || argv[i] === "--name" || argv[i] === "-n") {
+      feature = argv[++i];
+    } else if (!argv[i].startsWith("-") && !feature) feature = argv[i];
+    else throw new Error(`Unexpected argument: ${argv[i]}`);
+  }
+  if (!feature || !/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(feature)) {
+    throw new Error("Usage: specly <plan|verify> <feature> (feature names may contain letters, numbers, dots, underscores, and hyphens)");
+  }
+  return feature;
+}
+
+function printPlan(feature, root) {
+  const agent = detectAgent(root);
+  const layout = resolvePaths(agent, feature, root);
+  const files = [
+    ...SPEC_FILES.map((name) => [name, path.join(layout.specsDir, name)]),
+    [STEERING_FILE, layout.steeringPath],
+    ["how-to-use.md", layout.howToUsePath],
+  ];
+
+  console.log(`Specly plan — ${feature} (read-only; nothing is executed)\n`);
+  console.log(`Agent: ${layout.label} (${agent})`);
+  console.log(`Feature specs: ${layout.relativeSpecsDir}/\n`);
+  console.log("Proposed local file writes:");
+  for (const [name, file] of files) {
+    const state = fs.existsSync(file) ? "preserve existing file" : "create if init is separately approved";
+    console.log(`  ${state}: ${path.relative(root, file)} (${name})`);
+  }
+  console.log("\nDependency changes: none.");
+  console.log("External commands: none.");
+  console.log("Permissions: this plan reads local paths only; a later init would need write access to the listed missing paths.");
+  console.log("Network, credentials, and IDE launch: none.");
+}
+
+function readCheck(root, relativePath) {
+  try {
+    const content = fs.readFileSync(path.join(root, relativePath), "utf8");
+    return { status: "passed", content };
+  } catch (error) {
+    return { status: error.code === "ENOENT" ? "failed" : "unavailable", content: "" };
+  }
+}
+
+function checkboxState(content) {
+  const boxes = [...content.matchAll(/^\s*- \[([ xX])\]/gm)];
+  if (boxes.length === 0) return "unavailable";
+  return boxes.every((box) => box[1].toLowerCase() === "x") ? "passed" : "failed";
+}
+
+function printVerify(feature, root) {
+  const agent = detectAgent(root);
+  const layout = resolvePaths(agent, feature, root);
+  const checks = [];
+  let tasks = "";
+  let verification = "";
+  for (const name of SPEC_FILES) {
+    const relativePath = path.relative(root, path.join(layout.specsDir, name));
+    const result = readCheck(root, relativePath);
+    checks.push({ label: `${name} exists and is readable`, status: result.status });
+    if (name === "tasks.md") tasks = result.content;
+    if (name === "verification.md") verification = result.content;
+  }
+  for (const [name, file] of [[STEERING_FILE, layout.steeringPath], ["how-to-use.md", layout.howToUsePath]]) {
+    const relativePath = path.relative(root, file);
+    checks.push({ label: `${name} exists and is readable`, status: readCheck(root, relativePath).status });
+  }
+  checks.push({ label: "tasks.md checklist is complete", status: tasks ? checkboxState(tasks) : "unavailable" });
+  checks.push({ label: "verification.md checklist is complete", status: verification ? checkboxState(verification) : "unavailable" });
+  checks.push({ label: "requirements/design acceptance evidence", status: "unavailable" });
+  checks.push({ label: "External test commands", status: "skipped" });
+
+  const counts = Object.fromEntries(["passed", "failed", "skipped", "unavailable"].map((status) => [status, checks.filter((check) => check.status === status).length]));
+  console.log(`Specly verify — ${feature} (read-only; no commands run)\n`);
+  console.log(`Agent: ${layout.label} (${agent})`);
+  for (const check of checks) console.log(`  ${check.status.toUpperCase().padEnd(11)} ${check.label}`);
+  console.log(`\nSummary: ${counts.passed} passed, ${counts.failed} failed, ${counts.skipped} skipped, ${counts.unavailable} unavailable.`);
+  console.log("Progress is read from durable tasks.md checkboxes. This report is not persisted; acceptance evidence requires project-specific checks.");
 }
 
 function printDoctor(root = process.cwd()) {
@@ -130,8 +216,14 @@ function copyTemplate(fileName, dest, force) {
 }
 
 function main(argv = process.argv, root = process.cwd()) {
-  const explicitCommand = ["init", "doctor"].includes(argv[2]);
+  const explicitCommand = ["init", "doctor", "plan", "verify"].includes(argv[2]);
   const command = explicitCommand ? argv[2] : "init";
+  if (command === "plan" || command === "verify") {
+    const feature = parseWorkflowArgs(argv);
+    if (command === "plan") printPlan(feature, root);
+    else printVerify(feature, root);
+    return;
+  }
   const args = parseArgs(argv, explicitCommand ? 3 : 2);
 
   if (command === "doctor") {

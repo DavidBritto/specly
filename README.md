@@ -261,6 +261,7 @@ A standalone Python CLI package is provided under [`python/`](./python/) for env
 - **Asset synchronization:** `python3 python/scripts/sync_assets.py --check` prevents template drift between the canonical source files and packaged snapshots.
 - **Optional Strands task execution:** Lazy adapter in `specly_cli.optional.strands_adapter` for task-scoped execution with explicit approval, tool allowlists, writable root enforcement, and auditable execution records that never auto-verify requirements.
 - **Optional Google AX adapter:** Lazy adapter in `specly_cli.optional.ax_adapter` for offline prerequisite diagnostics and immutable effect previews with separate affirmative mutation approval.
+- **Static presentation site:** Accessible local presentation under [`site/`](./site/) with evidence-based claim tracking in `site/claims.json` and inert Pages configuration.
 - **Testing:** `PYTHONPATH=python/src python3 -m unittest discover -s python/tests` runs the unit, wheel smoke, and cross-runtime conformance suites.
 
 ---

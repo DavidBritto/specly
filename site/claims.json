@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "description": "Specly release claim inventory and evidence status",
+  "claims": [
+    {
+      "id": "node_cli_sdd_scaffolding",
+      "capability": "Node CLI SDD scaffolding (init, agent detection, 4 spec templates, steering)",
+      "state": "released",
+      "command": "npx specly",
+      "evidence_locator": "npm registry package specly@1.1.0 (https://www.npmjs.com/package/specly)",
+      "description": "Standard Spec-Driven Development scaffolding for AI agents."
+    },
+    {
+      "id": "node_cli_workflow_commands",
+      "capability": "Explicit init, read-only doctor, read-only plan, and artifact verification",
+      "state": "local-preview",
+      "command": "npx specly doctor / plan / verify",
+      "evidence_locator": "git branch feat/specly-workflow-* (unreleased)",
+      "description": "Read-only planning, doctor diagnostics, and artifact inspection."
+    },
+    {
+      "id": "node_cli_approved_run_ledger",
+      "capability": "Manifest-declared, digest-approved local write-file action and recovery ledger",
+      "state": "local-preview",
+      "command": "npx specly run <feature> --task <id> --approve <digest>",
+      "evidence_locator": "git branch feat/specly-workflow-* (unreleased)",
+      "description": "Auditable local file actions gated by SHA-256 digest approvals."
+    },
+    {
+      "id": "python_cli_node_free",
+      "capability": "Standalone Python CLI package with exact artifact contract parity",
+      "state": "local-preview",
+      "command": "specly init / doctor / plan / verify",
+      "evidence_locator": "python/ test suite and local wheel; unallocated on PyPI (404)",
+      "description": "Node-independent SDD generation conforming to artifact-contract-v1."
+    },
+    {
+      "id": "strands_adapter",
+      "capability": "Optional lazy Strands task execution adapter with strict tool allowlist",
+      "state": "local-preview",
+      "command": "specly_cli.optional.strands_adapter.execute_task",
+      "evidence_locator": "python/tests/test_strands_adapter.py (local mock tests; unreleased)",
+      "description": "Task-scoped execution boundary with data-only tools and limit enforcement."
+    },
+    {
+      "id": "ax_cluster_adapter",
+      "capability": "Optional Google AX cluster adapter for offline diagnostics and effect previews",
+      "state": "unverified",
+      "command": "specly_cli.optional.ax_adapter.check_prerequisites / generate_ax_preview",
+      "evidence_locator": "google/ax repository prerelease status; local offline tests only",
+      "description": "Offline Kubernetes/AX prerequisite checks and immutable preview digests."
+    },
+    {
+      "id": "presentation_site",
+      "capability": "Accessible static product presentation site",
+      "state": "local-preview",
+      "command": "open site/index.html",
+      "evidence_locator": "site/ directory; no public deployment",
+      "description": "Accessible terminal-style narrative and release evidence status."
+    },
+    {
+      "id": "linkedin_launch_copy",
+      "capability": "Release-grounded LinkedIn announcement copy",
+      "state": "draft",
+      "command": "read content.md",
+      "evidence_locator": "content.md; draft only, unposted",
+      "description": "Announcement copy grounded in verified claim states."
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Specly — Spec-Driven Development Scaffolding</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Specly</h1>
+      <p class="tagline">Spec-Driven Development scaffolding for AI agents: requirements, design, tasks, and steering before code.</p>
+    </header>
+
+    <main>
+      <section id="terminal-workflow" aria-labelledby="terminal-heading">
+        <h2 id="terminal-heading">Workflow Overview</h2>
+        <div class="terminal" role="region" aria-label="Terminal workflow demonstration">
+          <pre><code><span class="cmd-prompt">$</span> npx specly --agent cursor --feature auth
+
+<span class="cmd-output">🤖 Agent:  Cursor (cursor)
+📂 Feature: auth
+📁 Specs:   .cursor/specs/auth/
+
+📁 Folder created: .cursor/specs/auth/
+✅ Created: .cursor/specs/auth/requirements.md
+✅ Created: .cursor/specs/auth/design.md
+✅ Created: .cursor/specs/auth/tasks.md
+✅ Created: .cursor/steering.md
+✅ Created: .cursor/how-to-use.md
+
+🚀 SDD initialized.
+   Start with: .cursor/specs/auth/requirements.md
+   Context:    .cursor/steering.md
+   Guide:      .cursor/how-to-use.md</span></code></pre>
+        </div>
+      </section>
+
+      <section id="capabilities" aria-labelledby="capabilities-heading">
+        <h2 id="capabilities-heading">Capabilities & Evidence-Based Availability</h2>
+        <p>Every capability is grounded in observed release evidence. Local feature branch code and previews are strictly distinguished from published registry packages.</p>
+
+        <table class="claims-table" aria-label="Capability status inventory">
+          <thead>
+            <tr>
+              <th scope="col">Capability</th>
+              <th scope="col">Status</th>
+              <th scope="col">Evidence Locator</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Node CLI SDD scaffolding (v1.1.0)</td>
+              <td><span class="badge badge-released">Released</span></td>
+              <td>npm: <a href="https://www.npmjs.com/package/specly">specly@1.1.0</a></td>
+            </tr>
+            <tr>
+              <td>Node CLI workflow (doctor, plan, verify)</td>
+              <td><span class="badge badge-preview">Local Preview</span></td>
+              <td>Branch <code>feat/specly-workflow-*</code> (unreleased)</td>
+            </tr>
+            <tr>
+              <td>Manifest-approved write-file run ledger</td>
+              <td><span class="badge badge-preview">Local Preview</span></td>
+              <td>Branch <code>feat/specly-workflow-*</code> (unreleased)</td>
+            </tr>
+            <tr>
+              <td>Node-free Python CLI distribution</td>
+              <td><span class="badge badge-preview">Local Preview</span></td>
+              <td><code>python/</code> wheel tests; provisional name on PyPI</td>
+            </tr>
+            <tr>
+              <td>Optional Strands task execution adapter</td>
+              <td><span class="badge badge-preview">Local Preview</span></td>
+              <td><code>specly_cli.optional.strands_adapter</code> mock tests</td>
+            </tr>
+            <tr>
+              <td>Optional Google AX cluster adapter</td>
+              <td><span class="badge badge-unverified">Unverified</span></td>
+              <td>Google AX prerelease; offline tests only</td>
+            </tr>
+            <tr>
+              <td>Static presentation site</td>
+              <td><span class="badge badge-preview">Local Preview</span></td>
+              <td>Local <code>site/</code> directory</td>
+            </tr>
+            <tr>
+              <td>Launch announcement copy</td>
+              <td><span class="badge badge-draft">Draft</span></td>
+              <td><code>content.md</code> (unposted)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <footer>
+      <p>Specly — MIT License · Local preview artifact. No remote deployment or publication is claimed.</p>
+    </footer>
+  </div>
+</body>
+</html>

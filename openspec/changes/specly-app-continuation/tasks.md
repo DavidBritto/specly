@@ -62,11 +62,11 @@ The Python test runner is intentionally unresolved: select it only after the Pyt
 
 ## Phase 4: S7 — Accessible static presentation
 
-- [ ] 4.1 Add the `site/claims.json` claim inventory and failing local tests that reject `released` claims without observed package/site evidence, and reject unverified install commands or live links. Seed current S1–S3c/S4–S8 states only from evidence actually observed during implementation; branch code and roadmap text alone remain local-preview/planned/unverified.
-- [ ] 4.2 Create semantic `site/index.html` with essential terminal-style narrative present before JavaScript and an equivalent static, non-animated presentation. Add failing tests/checks for scripts-disabled content equivalence and reduced-motion behavior, then implement `site/styles.css` and any progressive-enhancement script without making animation essential.
-- [ ] 4.3 Add failing local accessibility/layout checks for keyboard reachability, visible focus, contrast, narrow viewport overflow, and legible controls; correct the page and re-run checks. Mark accessibility checked only for the validations actually observed.
-- [ ] 4.4 Add local static/link checks using fixtures that do not probe external URLs. If a Pages workflow is prepared in `.github/workflows/pages.yml`, keep it inert and locally reviewable; activation, deployment, repository operations, and remote URL checks require separate explicit authorization naming destination, operation, and credential/session.
-- [ ] 4.5 Document preview/deployment state in `README.md` or `site/` guidance. A local preview or workflow file is not evidence of a live site and must not be presented as a publication.
+- [x] 4.1 Add the `site/claims.json` claim inventory and failing local tests that reject `released` claims without observed package/site evidence, and reject unverified install commands or live links. Seed current S1–S3c/S4–S8 states only from evidence actually observed during implementation; branch code and roadmap text alone remain local-preview/planned/unverified.
+- [x] 4.2 Create semantic `site/index.html` with essential terminal-style narrative present before JavaScript and an equivalent static, non-animated presentation. Add failing tests/checks for scripts-disabled content equivalence and reduced-motion behavior, then implement `site/styles.css` and any progressive-enhancement script without making animation essential.
+- [x] 4.3 Add failing local accessibility/layout checks for keyboard reachability, visible focus, contrast, narrow viewport overflow, and legible controls; correct the page and re-run checks. Mark accessibility checked only for the validations actually observed.
+- [x] 4.4 Add local static/link checks using fixtures that do not probe external URLs. If a Pages workflow is prepared in `.github/workflows/pages.yml`, keep it inert and locally reviewable; activation, deployment, repository operations, and remote URL checks require separate explicit authorization naming destination, operation, and credential/session.
+- [x] 4.5 Document preview/deployment state in `README.md` or `site/` guidance. A local preview or workflow file is not evidence of a live site and must not be presented as a publication.
 
 ## Phase 5: S8 — Release-grounded launch copy
 

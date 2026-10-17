@@ -11,6 +11,7 @@ const {
   STEERING_FILE,
 } = require("./agents");
 const { deployAndOpen } = require("./ide");
+const { printTaskPlan } = require("./workflow");
 
 const TEMPLATE_DIR = path.join(__dirname, "templates");
 
@@ -48,6 +49,7 @@ Usage:
   npx specly init [options]
   npx specly doctor
   npx specly plan <feature>
+  npx specly plan <feature> --task <id>
   npx specly verify <feature>
 
 Commands:
@@ -73,16 +75,19 @@ Examples:
 
 function parseWorkflowArgs(argv) {
   let feature = null;
+  let taskId = null;
   for (let i = 3; i < argv.length; i++) {
     if (argv[i] === "--feature" || argv[i] === "--name" || argv[i] === "-n") {
       feature = argv[++i];
+    } else if (argv[i] === "--task") {
+      taskId = argv[++i];
     } else if (!argv[i].startsWith("-") && !feature) feature = argv[i];
     else throw new Error(`Unexpected argument: ${argv[i]}`);
   }
   if (!feature || !/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(feature)) {
     throw new Error("Usage: specly <plan|verify> <feature> (feature names may contain letters, numbers, dots, underscores, and hyphens)");
   }
-  return feature;
+  return { feature, taskId };
 }
 
 function printPlan(feature, root) {
@@ -218,10 +223,15 @@ function copyTemplate(fileName, dest, force) {
 function main(argv = process.argv, root = process.cwd()) {
   const explicitCommand = ["init", "doctor", "plan", "verify"].includes(argv[2]);
   const command = explicitCommand ? argv[2] : "init";
-  if (command === "plan" || command === "verify") {
-    const feature = parseWorkflowArgs(argv);
-    if (command === "plan") printPlan(feature, root);
-    else printVerify(feature, root);
+  if (["plan", "verify"].includes(command)) {
+    const args = parseWorkflowArgs(argv);
+    if (command === "plan") {
+      if (args.taskId) printTaskPlan(args.feature, args.taskId, root);
+      else printPlan(args.feature, root);
+    } else {
+      if (args.taskId) throw new Error("verify accepts only a feature name.");
+      printVerify(args.feature, root);
+    }
     return;
   }
   const args = parseArgs(argv, explicitCommand ? 3 : 2);

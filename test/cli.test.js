@@ -34,6 +34,19 @@ function tempDir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), "sdd-test-"));
 }
 
+function actionProject(actionPath = "new/hello.txt", actionContent = "hello\n") {
+  const dir = tempDir();
+  runSdd(dir, ["init", "--agent", "generic", "--feature", "auth"]);
+  fs.writeFileSync(path.join(dir, "specs", "tasks.md"), "# Tasks\n\n- [ ] 1.1 Create a greeting file\n");
+  fs.mkdirSync(path.join(dir, ".specly", "actions"), { recursive: true });
+  fs.writeFileSync(path.join(dir, ".specly", "actions", "auth.json"), JSON.stringify({
+    schemaVersion: 1,
+    feature: "auth",
+    actions: [{ taskId: "1.1", type: "write-file", path: actionPath, content: actionContent }],
+  }));
+  return dir;
+}
+
 test("generic: creates 5 spec files in specs/", () => {
   const dir = tempDir();
   runSdd(dir, ["--agent", "generic"]);
@@ -173,6 +186,42 @@ test("plan and verify reject unsafe feature path tokens", () => {
   const dir = tempDir();
   assert.throws(() => runSdd(dir, ["plan", "../outside"]), /Usage: specly/);
   assert.throws(() => runSdd(dir, ["verify", "auth/../../outside"]), /Usage: specly/);
+});
+
+test("task plan hashes the exact declared write and stays read-only", () => {
+  const dir = actionProject();
+  const before = fs.readdirSync(dir, { recursive: true }).sort();
+  const output = runSdd(dir, ["plan", "auth", "--task", "1.1"]);
+  assert.match(output, /Action: write-file/);
+  assert.match(output, /Target: new\/hello\.txt/);
+  assert.match(output, /Content: 6 UTF-8 bytes; SHA-256/);
+  assert.match(output, /Directories to create: new/);
+  assert.match(output, /Durable state: \.specly\/runs\/auth\/1\.1\.json/);
+  assert.match(output, /transient lock: \.specly\/runs\/auth\/1\.1\.lock/);
+  const digest = output.match(/Approval digest: ([a-f0-9]{64})/)[1];
+  assert.deepEqual(fs.readdirSync(dir, { recursive: true }).sort(), before);
+  assert.equal(fs.existsSync(path.join(dir, "new", "hello.txt")), false);
+});
+
+test("task planning rejects unknown task IDs and path traversal in action manifest", () => {
+  const missingTask = actionProject();
+  assert.throws(() => runSdd(missingTask, ["plan", "auth", "--task", "9.9"]), /not present in .*tasks\.md/);
+  const traversal = actionProject("../outside.txt");
+  assert.throws(() => runSdd(traversal, ["plan", "auth", "--task", "1.1"]), /parent path segments/);
+});
+
+test("action planner rejects existing targets and symlink ancestors", () => {
+  const existing = actionProject();
+  fs.mkdirSync(path.join(existing, "new"));
+  fs.writeFileSync(path.join(existing, "new", "hello.txt"), "preserve");
+  assert.throws(() => runSdd(existing, ["plan", "auth", "--task", "1.1"]), /target already exists/);
+  assert.equal(fs.readFileSync(path.join(existing, "new", "hello.txt"), "utf8"), "preserve");
+
+  const symlinked = actionProject("outside/new.txt");
+  const outside = fs.mkdtempSync(path.join(os.tmpdir(), "specly-outside-"));
+  fs.symlinkSync(outside, path.join(symlinked, "outside"), "dir");
+  assert.throws(() => runSdd(symlinked, ["plan", "auth", "--task", "1.1"]), /Symbolic links are not allowed/);
+  assert.equal(fs.existsSync(path.join(outside, "new.txt")), false);
 });
 
 test("artifact contract fixture matches every Node template and agent layout", () => {

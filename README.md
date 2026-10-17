@@ -167,6 +167,9 @@ npx specly plan auth
 
 # Inspect generated files and task/checklist progress without running tests
 npx specly verify auth
+
+# Preview one manifest-declared task action without executing it
+npx specly plan auth --task 1.1
 ```
 
 **Global install (optional):**
@@ -215,6 +218,27 @@ Options for the default/init command:
 `doctor` reports the Node.js version requirement, detected agent (or generic fallback), and bundled template availability. It does not write project files or launch an IDE. Initialization remains safe by default: existing files are skipped unless `--force` is provided.
 
 `plan <feature>` lists the feature's expected spec files, steering file, and guide, marking existing files for preservation and missing files as proposed writes only if `init` is separately run. It also states dependency, external-command, permission, network, credential, and IDE effects; it performs none of them. `verify <feature>` reports whether local spec files are readable and whether task/verification checkboxes are complete. Requirements/design acceptance evidence is unavailable unless checked by project-specific validation, and external test execution is skipped. Progress remains durably represented by `tasks.md`; the verify report itself is not saved.
+
+### Task-specific action planning (read-only)
+
+`plan <feature> --task <id>` reads a user-authored manifest at `.specly/actions/<feature>.json`. It does **not** execute task prose, invoke a model, run shell commands, install dependencies, or write files.
+
+```json
+{
+  "schemaVersion": 1,
+  "feature": "auth",
+  "actions": [
+    {
+      "taskId": "1.1",
+      "type": "write-file",
+      "path": "src/greeting.txt",
+      "content": "Hello\n"
+    }
+  ]
+}
+```
+
+The referenced task ID must exist in the feature's `tasks.md`. Planning shows the target, content SHA-256, parent directories, future ledger/lock effects, and a deterministic approval digest bound to the project root and current manifest/task bytes. Existing targets, traversal, reserved `.git`/`.specly` paths, and symlink ancestors are rejected. This preview alone changes nothing; execution is a separate explicit workflow step.
 
 Generated artifact paths, template fingerprints, ownership, and update policy are defined in the [artifact contract](./ARTIFACT-CONTRACT.md) and its [machine-readable fixture](./contracts/artifact-contract-v1.json).
 

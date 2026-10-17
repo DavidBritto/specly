@@ -32,6 +32,17 @@ The optional module `specly_cli.optional.strands_adapter` provides a strictly bo
 - **Evidence distinction:** An `ExecutionRecord` documents tool outcomes and status, but **never** marks tasks checked or implies requirements acceptance. Local unit tests run against local mock fixtures and contact no external providers.
 - **Installation:** Optional extra: `pip install "specly[strands]"`.
 
+## Optional Google AX Cluster Adapter
+
+The optional module `specly_cli.optional.ax_adapter` provides read-only prerequisite diagnostics and effect previews for Google AX / Agent Substrate:
+
+- **Disabled by default:** Default commands never import AX or inspect `KUBECONFIG` / ambient cluster credentials.
+- **Offline diagnostics:** Local inspection checks required binaries (`kubectl`, `ko`, `go`) without probing remote clusters or networks.
+- **Immutable effect preview:** Previews bind context, namespace, operation, resource targets, and proposed effects to an immutable SHA-256 approval digest.
+- **Distinct mutation approval:** Submitting a cluster operation requires affirmative approval matching the preview digest and explicit destination authorization (destination, operation, credential/session). Changing targets or effects invalidates approval and fails closed.
+- **Evidence status:** Labeled `unverified` (Google AX prerelease). No live cluster was contacted during local tests.
+- **Installation:** Optional extra: `pip install "specly[ax]"`.
+
 ## Development & Testing
 
 ```bash

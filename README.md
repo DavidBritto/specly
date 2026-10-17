@@ -259,6 +259,7 @@ A standalone Python CLI package is provided under [`python/`](./python/) for env
 - **Contract parity:** Conforms to `artifact-contract-v1.json`, generating exact byte-for-byte matching SHA-256 artifacts across all 7 agent layouts.
 - **Interruption & overwrite safety:** Re-running initialization identifies canonical files as already complete and skips them; divergent or partial files are flagged with a warning and require explicit `--force` to overwrite.
 - **Asset synchronization:** `python3 python/scripts/sync_assets.py --check` prevents template drift between the canonical source files and packaged snapshots.
+- **Optional Strands task execution:** Lazy adapter in `specly_cli.optional.strands_adapter` for task-scoped execution with explicit approval, tool allowlists, writable root enforcement, and auditable execution records that never auto-verify requirements.
 - **Testing:** `PYTHONPATH=python/src python3 -m unittest discover -s python/tests` runs the unit, wheel smoke, and cross-runtime conformance suites.
 
 ---

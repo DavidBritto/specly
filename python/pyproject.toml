@@ -19,6 +19,9 @@ classifiers = [
 ]
 dependencies = []
 
+[project.optional-dependencies]
+strands = ["strands-agents>=1.0.0"]
+
 [project.scripts]
 specly = "specly_cli.cli:main"
 

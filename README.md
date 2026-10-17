@@ -147,14 +147,20 @@ specly detects your environment and writes files to the standard path for each a
 ## Quick Start
 
 ```bash
-# Auto-detect agent
+# Initialize with the original shorthand (still supported)
 npx specly
+
+# Use the explicit command
+npx specly init --feature auth
 
 # Force agent + feature name
 npx specly --agent cursor --feature auth
 
 # List all agents
 npx specly --list
+
+# Check local readiness without changing files or opening an IDE
+npx specly doctor
 ```
 
 **Global install (optional):**
@@ -183,13 +189,22 @@ More prompting patterns in [how-to-use.md](./how-to-use.md#prompting-your-agent)
 
 ```
 npx specly [options]
+npx specly init [options]
+npx specly doctor
 
+Commands:
+  init                    Create SDD files (default; legacy syntax remains supported)
+  doctor                  Check Node.js, agent, and template readiness (read-only)
+
+Options for the default/init command:
   -a, --agent <name>      Target agent
   -n, --feature <name>    Feature name (default: starter)
   -f, --force             Overwrite existing files
   -l, --list              List supported agents
   -h, --help              Show help
 ```
+
+`doctor` reports the Node.js version requirement, detected agent (or generic fallback), and bundled template availability. It does not write project files or launch an IDE. Initialization remains safe by default: existing files are skipped unless `--force` is provided.
 
 ---
 

@@ -13,9 +13,8 @@ const {
 const { deployAndOpen } = require("./ide");
 
 const TEMPLATE_DIR = path.join(__dirname, "templates");
-const ROOT = process.cwd();
 
-function parseArgs(argv) {
+function parseArgs(argv, startIndex = 2) {
   const args = {
     agent: null,
     feature: "starter",
@@ -24,7 +23,7 @@ function parseArgs(argv) {
     force: false,
   };
 
-  for (let i = 2; i < argv.length; i++) {
+  for (let i = startIndex; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--help" || arg === "-h") args.help = true;
     else if (arg === "--list" || arg === "-l") args.list = true;
@@ -46,6 +45,12 @@ by davidops — https://www.npmjs.com/~davidops
 
 Usage:
   npx specly [options]
+  npx specly init [options]
+  npx specly doctor
+
+Commands:
+  init                    Create the SDD files (default; legacy syntax remains supported)
+  doctor                  Check runtime, agent, and template readiness without changing files
 
 Options:
   -a, --agent <name>      Target agent (${agents})
@@ -60,6 +65,32 @@ Examples:
   npx specly --agent kiro -n payments
   npx specly --agent generic
 `);
+}
+
+function printDoctor(root = process.cwd()) {
+  const nodeMajor = Number(process.versions.node.split(".")[0]);
+  const agent = detectAgent(root);
+  const templates = [...SPEC_FILES, STEERING_FILE];
+  const missing = templates.filter(
+    (file) => !fs.existsSync(path.join(TEMPLATE_DIR, file))
+  );
+  const guideReady = fs.existsSync(path.join(__dirname, "..", "how-to-use.md"));
+  const runtimeReady = nodeMajor >= 18;
+  const agentReady = listAgents().includes(agent);
+  const templateReady = missing.length === 0 && guideReady;
+
+  console.log("Specly doctor — read-only readiness check\n");
+  console.log(
+    `Runtime:   ${runtimeReady ? "ready" : "unsupported"} (Node.js ${process.versions.node}; requires >=18)`
+  );
+  console.log(
+    `Agent:     ${agentReady ? "ready" : "unsupported"} (${agent}${agent === "generic" ? " fallback" : " detected"})`
+  );
+  console.log(
+    `Templates: ${templateReady ? "ready" : "incomplete"} (${templates.length} spec/steering templates${guideReady ? " and guide" : "; guide missing"})`
+  );
+  if (missing.length > 0) console.log(`Missing:   ${missing.join(", ")}`);
+  if (!runtimeReady || !agentReady || !templateReady) process.exitCode = 1;
 }
 
 function printAgents() {
@@ -89,17 +120,28 @@ function copyTemplate(fileName, dest, force) {
   }
 
   if (fs.existsSync(dest) && !force) {
-    console.log(`⚠️  Already exists, skipping: ${path.relative(ROOT, dest)}`);
+    console.log(`⚠️  Already exists, skipping: ${path.relative(process.cwd(), dest)}`);
     return false;
   }
 
   fs.copyFileSync(src, dest);
-  console.log(`✅ Created: ${path.relative(ROOT, dest)}`);
+  console.log(`✅ Created: ${path.relative(process.cwd(), dest)}`);
   return true;
 }
 
-function main() {
-  const args = parseArgs(process.argv);
+function main(argv = process.argv, root = process.cwd()) {
+  const explicitCommand = ["init", "doctor"].includes(argv[2]);
+  const command = explicitCommand ? argv[2] : "init";
+  const args = parseArgs(argv, explicitCommand ? 3 : 2);
+
+  if (command === "doctor") {
+    if (args.help) {
+      console.log("Usage: npx specly doctor\n\nChecks runtime, agent, and template readiness without writing files or opening an IDE.");
+      return;
+    }
+    printDoctor(root);
+    return;
+  }
 
   if (args.help) {
     printHelp();
@@ -111,8 +153,8 @@ function main() {
     return;
   }
 
-  const agentKey = args.agent || detectAgent(ROOT);
-  const layout = resolvePaths(agentKey, args.feature, ROOT);
+  const agentKey = args.agent || detectAgent(root);
+  const layout = resolvePaths(agentKey, args.feature, root);
 
   console.log(`\n🤖 Agent:  ${layout.label} (${layout.agent})`);
   console.log(`📂 Feature: ${layout.feature}`);
@@ -150,9 +192,13 @@ function main() {
   console.log(`   Guide:      ${layout.relativeHowToUse} (opened in your IDE)`);
 }
 
-try {
-  main();
-} catch (error) {
-  console.error(`\n❌ Error: ${error.message}`);
-  process.exit(1);
+if (require.main === module) {
+  try {
+    main();
+  } catch (error) {
+    console.error(`\n❌ Error: ${error.message}`);
+    process.exit(1);
+  }
 }
+
+module.exports = { main, parseArgs };

@@ -4,10 +4,12 @@
 # Remote deployment, GitHub Pages activation, or repository operations require
 # separate explicit authorization naming destination, operation, and credential/session.
 
-name: Deploy Static Site to Pages (Inert)
+name: Deploy Static Site to Pages
 
 on:
-  workflow_dispatch: # Manual trigger only; inactive by default
+  push:
+    branches: ["main"]
+  workflow_dispatch: # Manual trigger supported
 
 permissions:
   contents: read
@@ -24,7 +26,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    if: false # Explicitly disabled / inert pending authorization
     steps:
       - name: Checkout
         uses: actions/checkout@v4

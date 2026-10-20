@@ -26,7 +26,7 @@ You get a clean, versioned specification structure directly in your project:
 - `verification.md` (observable checklist)
 - `steering.md` (persistent project rules & context)
 
-### What's Available Today (Released v1.2.0 on npm)
+### What's Available Today (Released v1.2.1 on npm)
 - Native scaffolding for Cursor, Kiro, VS Code, Claude Code, Windsurf, Antigravity, and generic projects.
 - Safe by default: skips existing files unless `--force` is specified.
 - Controlled workflow commands: read-only `specly doctor`, `specly plan`, and `specly verify`.
@@ -57,7 +57,7 @@ Most AI agent failures aren't model failures — they are context failures. If t
 
 Scaffolds EARS requirements, technical design, tasks, and steering for Cursor, Kiro, Claude Code, and more.
 
-📦 Available now on npm: `specly@1.2.0`
+📦 Available now on npm: `specly@1.2.1`
 🔬 In local preview: Node-free Python CLI (`uvx`) and agent execution adapters.
 
 Try it out: `npx specly`
@@ -72,7 +72,7 @@ GitHub: https://github.com/DavidBritto/specly
 
 | Claim ID | Capability | Stated Copy Status | Observed Evidence Locator | Reconciliation Verdict |
 |----------|------------|--------------------|----------------------------|------------------------|
-| `node_cli_sdd_scaffolding` | Node CLI SDD scaffolding | Released | npm: `specly@1.2.0` | Verified |
+| `node_cli_sdd_scaffolding` | Node CLI SDD scaffolding | Released | npm: `specly@1.2.1` | Verified |
 | `node_cli_workflow_commands` | `doctor`, `plan`, `verify` | Local Preview | Git branch `feat/specly-workflow-*` | Verified as unreleased |
 | `node_cli_approved_run_ledger` | Digest-gated `run` & ledger | Local Preview | Git branch `feat/specly-workflow-*` | Verified as unreleased |
 | `python_cli_node_free` | Python CLI package | Local Preview | `python/` wheel smoke tests; unallocated PyPI | Verified as unreleased |

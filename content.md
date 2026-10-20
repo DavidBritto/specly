@@ -26,19 +26,20 @@ You get a clean, versioned specification structure directly in your project:
 - `verification.md` (observable checklist)
 - `steering.md` (persistent project rules & context)
 
-### What's Available Today (Released v1.2.1 on npm)
+### What's Available Today (Released on npm & PyPI)
 - Native scaffolding for Cursor, Kiro, VS Code, Claude Code, Windsurf, Antigravity, and generic projects.
 - Safe by default: skips existing files unless `--force` is specified.
 - Controlled workflow commands: read-only `specly doctor`, `specly plan`, and `specly verify`.
 - Auditable action execution: digest-approved local write-file actions with atomic run ledger.
-- Single command execution: `npx specly`.
+- Node.js entry point: `npx specly` (v1.2.1 on npm).
+- Node-free Python entry point: `uvx specly` (v0.1.0 on PyPI).
 
 ### In Active Local Preview (Coming Soon)
-- **Node-free Python CLI:** a standalone Python distribution conforming to the shared artifact contract (tested in local wheel preview; provisional PyPI identity).
 - **Optional agent adapters:** lazy boundaries for Strands task execution and Google AX cluster diagnostics (currently unreleased / unverified).
 
 Check out the project:
 - npm: https://www.npmjs.com/package/specly
+- PyPI: https://pypi.org/project/specly/
 - GitHub: https://github.com/DavidBritto/specly
 - Presentation site: https://davidbritto.github.io/specly/
 
@@ -57,10 +58,12 @@ Most AI agent failures aren't model failures — they are context failures. If t
 
 Scaffolds EARS requirements, technical design, tasks, and steering for Cursor, Kiro, Claude Code, and more.
 
-📦 Available now on npm: `specly@1.2.1`
-🔬 In local preview: Node-free Python CLI (`uvx`) and agent execution adapters.
+📦 Available now:
+- npm: `specly@1.2.1` (`npx specly`)
+- PyPI: `specly@0.1.0` (`uvx specly`)
+🔬 In local preview: optional Strands and Google AX agent execution adapters.
 
-Try it out: `npx specly`
+Try it out: `npx specly` or `uvx specly`
 Web: https://davidbritto.github.io/specly/
 GitHub: https://github.com/DavidBritto/specly
 
@@ -73,6 +76,9 @@ GitHub: https://github.com/DavidBritto/specly
 | Claim ID | Capability | Stated Copy Status | Observed Evidence Locator | Reconciliation Verdict |
 |----------|------------|--------------------|----------------------------|------------------------|
 | `node_cli_sdd_scaffolding` | Node CLI SDD scaffolding | Released | npm: `specly@1.2.1` | Verified |
+| `node_cli_workflow_commands` | `doctor`, `plan`, `verify` | Released | npm: `specly@1.2.1` | Verified |
+| `node_cli_approved_run_ledger` | Digest-gated `run` & ledger | Released | npm: `specly@1.2.1` | Verified |
+| `python_cli_node_free` | Python CLI package | Released | PyPI: `specly@0.1.0` | Verified |
 | `node_cli_workflow_commands` | `doctor`, `plan`, `verify` | Local Preview | Git branch `feat/specly-workflow-*` | Verified as unreleased |
 | `node_cli_approved_run_ledger` | Digest-gated `run` & ledger | Local Preview | Git branch `feat/specly-workflow-*` | Verified as unreleased |
 | `python_cli_node_free` | Python CLI package | Local Preview | `python/` wheel smoke tests; unallocated PyPI | Verified as unreleased |

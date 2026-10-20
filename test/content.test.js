@@ -29,10 +29,10 @@ test("content.md claims reconcile against site/claims.json evidence without prem
   // Check that released capabilities are mentioned
   assert.match(content, /npx specly/i, "released npx specly command must be mentioned");
 
-  // Ensure python, strands, and ax are labeled as preview or unreleased in copy
+  // Ensure python capability is mentioned and adapters are labeled as preview or unreleased
   const pythonMatches = content.match(/python/gi) || [];
   assert.ok(pythonMatches.length > 0, "Python capability should be mentioned");
-  assert.match(content, /preview|local|unreleased.*python|python.*preview/i, "Python must be identified as preview/unreleased");
+  assert.match(content, /preview|local|unreleased|unverified/i, "Adapters must be identified as preview/unreleased");
 
   // Authorization notice for posting/scheduling
   assert.match(content, /authorization/i, "must declare that posting requires explicit authorization");

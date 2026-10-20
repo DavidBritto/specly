@@ -20,14 +20,14 @@ test("site/claims.json exists and validates release evidence status", () => {
     assert.ok(allowedStates.has(claim.state), `Invalid state ${claim.state} in claim ${claim.id}`);
     assert.ok(claim.evidence_locator, `evidence_locator required for claim ${claim.id}`);
 
-    // If state is released, it must point to observed registry evidence (npm specly@1.1.0)
+    // If state is released, it must point to observed registry evidence (npm or PyPI)
     if (claim.state === "released") {
       assert.match(
         claim.evidence_locator,
-        /npm|registry/,
+        /npm|registry|pypi/i,
         `Released claim ${claim.id} must be backed by observed registry evidence`
       );
-      assert.doesNotMatch(claim.id, /python|strands|ax/, "Python/Strands/AX must not be marked released");
+      assert.doesNotMatch(claim.id, /strands|ax/, "Strands/AX must not be marked released");
     }
   }
 });

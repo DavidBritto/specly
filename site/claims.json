@@ -30,9 +30,9 @@
     {
       "id": "python_cli_node_free",
       "capability": "Standalone Python CLI package with exact artifact contract parity",
-      "state": "local-preview",
+      "state": "released",
       "command": "specly init / doctor / plan / verify",
-      "evidence_locator": "python/ test suite and local wheel; unallocated on PyPI (404)",
+      "evidence_locator": "PyPI registry package specly@0.1.0 (https://pypi.org/project/specly/)",
       "description": "Node-independent SDD generation conforming to artifact-contract-v1."
     },
     {

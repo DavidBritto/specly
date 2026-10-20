@@ -148,6 +148,28 @@ test("doctor reports readiness without changing files or opening an IDE", () => 
   assert.equal(fs.existsSync(marker), false);
 });
 
+test("init creates spec files without spawning an IDE or cursor", () => {
+  const dir = tempDir();
+  const fakeBin = path.join(dir, "bin");
+  const target = path.join(dir, "clean-project");
+  const marker = path.join(dir, "ide-opened");
+  fs.mkdirSync(fakeBin, { recursive: true });
+  fs.mkdirSync(target);
+  fs.writeFileSync(path.join(fakeBin, "cursor"), `#!/bin/sh\nprintf opened > "${marker}"\n`);
+  fs.chmodSync(path.join(fakeBin, "cursor"), 0o755);
+
+  const output = runSdd(target, ["init", "--agent", "cursor", "--feature", "test-init"], {
+    PATH: `${fakeBin}${path.delimiter}${process.env.PATH}`,
+    CURSOR_SESSION_ID: "init-test",
+    SDD_NO_OPEN: "",
+  });
+
+  assert.match(output, /SDD initialized/);
+  assert.equal(fs.existsSync(path.join(target, ".cursor", "specs", "test-init", "requirements.md")), true);
+  assert.equal(fs.existsSync(marker), false);
+  assert.doesNotMatch(output, /opened in your IDE/);
+});
+
 test("plan enumerates effects without writing to the target project", () => {
   const dir = tempDir();
   fs.mkdirSync(path.join(dir, "specs"));

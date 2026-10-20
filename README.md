@@ -95,7 +95,7 @@ $ npx specly --agent cursor --feature auth
 🚀 SDD initialized.
    Start with: .cursor/specs/auth/requirements.md
    Context:    .cursor/steering.md
-   Guide:      .cursor/how-to-use.md (opened in your IDE)
+   Guide:      .cursor/how-to-use.md
 ```
 
 Generated layout:
@@ -124,7 +124,7 @@ Generated layout:
 
 **EARS** (Easy Approach to Requirements Syntax) gives you structured, testable acceptance criteria using keywords like `WHEN`, `IF...THEN`, `WHILE`, and `WHERE`. See the [EARS reference](./how-to-use.md#ears-criteria-templates) in the full guide.
 
-A copy of `how-to-use.md` is placed in your project and opened in your IDE.
+A copy of `how-to-use.md` is placed in your project for reference.
 
 ---
 

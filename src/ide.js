@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const { spawnSync } = require("child_process");
 
 const GUIDE_NAME = "how-to-use.md";
 const PACKAGE_GUIDE = path.join(__dirname, "..", GUIDE_NAME);
@@ -19,43 +18,13 @@ function deployHowToUse(destPath, force = false) {
   return { created: true, path: destPath };
 }
 
-function openInIde(filePath) {
-  if (process.env.SDD_NO_OPEN) return false;
-
-  const abs = path.resolve(filePath);
-  const commands = [];
-
-  if (process.env.CURSOR_TRACE_ID || process.env.CURSOR_SESSION_ID) {
-    commands.push(["cursor", "-r", abs]);
-  }
-  if (process.env.VSCODE_IPC_HOOK || process.env.TERM_PROGRAM === "vscode") {
-    commands.push(["code", "-r", abs]);
-  }
-  if (process.env.TERM_PROGRAM === "windsurf") {
-    commands.push(["windsurf", "-r", abs]);
-  }
-
-  for (const cmd of ["cursor", "code", "windsurf", "codium"]) {
-    commands.push([cmd, "-r", abs]);
-  }
-
-  const seen = new Set();
-  for (const [cmd, ...args] of commands) {
-    if (seen.has(cmd)) continue;
-    seen.add(cmd);
-
-    const result = spawnSync(cmd, args, { stdio: "ignore" });
-    if (result.error?.code === "ENOENT") continue;
-    if (result.status === 0) return true;
-  }
-
+function openInIde(_filePath) {
+  // No-op: automatic IDE opening removed per CLI hygiene
   return false;
 }
 
 function deployAndOpen(destPath, force = false) {
-  const { created, path: guidePath } = deployHowToUse(destPath, force);
-  openInIde(guidePath);
-  return { created, path: guidePath };
+  return deployHowToUse(destPath, force);
 }
 
 module.exports = {

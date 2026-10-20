@@ -10,7 +10,7 @@ const {
   SPEC_FILES,
   STEERING_FILE,
 } = require("./agents");
-const { deployAndOpen } = require("./ide");
+const { deployHowToUse } = require("./ide");
 const { printTaskPlan, printTaskVerify, runTask, printRecovery } = require("./workflow");
 
 const TEMPLATE_DIR = path.join(__dirname, "templates");
@@ -296,7 +296,7 @@ function main(argv = process.argv, root = process.cwd()) {
   ensureDir(path.dirname(steeringDest));
   if (copyTemplate(STEERING_FILE, steeringDest, args.force)) created++;
 
-  const guide = deployAndOpen(layout.howToUsePath, args.force);
+  const guide = deployHowToUse(layout.howToUsePath, args.force);
   if (guide.created) {
     console.log(`✅ Created: ${layout.relativeHowToUse}`);
     created++;
@@ -309,7 +309,7 @@ function main(argv = process.argv, root = process.cwd()) {
   if (!layout.steeringInSpecs) {
     console.log(`   Context:    ${layout.relativeSteering}`);
   }
-  console.log(`   Guide:      ${layout.relativeHowToUse} (opened in your IDE)`);
+  console.log(`   Guide:      ${layout.relativeHowToUse}`);
 }
 
 if (require.main === module) {

@@ -79,29 +79,29 @@ Instead of improvising prompts, you get a versioned spec that guides the agent *
 ## Demo
 
 ```bash
-$ npx specly --agent cursor --feature auth
+$ npx specly --agent agents --feature auth
 
-🤖 Agent:  Cursor (cursor)
+🤖 Agent:  Agents (Universal) (agents)
 📂 Feature: auth
-📁 Specs:   .cursor/specs/auth/
+📁 Specs:   .agents/specs/auth/
 
-📁 Folder created: .cursor/specs/auth/
-✅ Created: .cursor/specs/auth/requirements.md
-✅ Created: .cursor/specs/auth/design.md
-✅ Created: .cursor/specs/auth/tasks.md
-✅ Created: .cursor/steering.md
-✅ Created: .cursor/how-to-use.md
+📁 Folder created: .agents/specs/auth/
+✅ Created: .agents/specs/auth/requirements.md
+✅ Created: .agents/specs/auth/design.md
+✅ Created: .agents/specs/auth/tasks.md
+✅ Created: .agents/steering.md
+✅ Created: .agents/how-to-use.md
 
 🚀 SDD initialized.
-   Start with: .cursor/specs/auth/requirements.md
-   Context:    .cursor/steering.md
-   Guide:      .cursor/how-to-use.md
+   Start with: .agents/specs/auth/requirements.md
+   Context:    .agents/steering.md
+   Guide:      .agents/how-to-use.md
 ```
 
 Generated layout:
 
 ```
-.cursor/
+.agents/
 ├── how-to-use.md
 ├── steering.md
 └── specs/
@@ -134,6 +134,7 @@ specly detects your environment and writes files to the standard path for each a
 
 | Agent | Command | Specs path | Steering |
 |-------|---------|------------|----------|
+| Agents (Universal) | `--agent agents` | `.agents/specs/<feature>/` | `.agents/steering.md` |
 | Generic | `--agent generic` | `specs/` | `specs/steering.md` |
 | Cursor | `--agent cursor` | `.cursor/specs/<feature>/` | `.cursor/steering.md` |
 | Kiro | `--agent kiro` | `.kiro/specs/<feature>/` | `.kiro/steering.md` |
@@ -154,7 +155,7 @@ npx specly
 npx specly init --feature auth
 
 # Force agent + feature name
-npx specly --agent cursor --feature auth
+npx specly --agent agents --feature auth
 
 # List all agents
 npx specly --list
@@ -187,7 +188,7 @@ specly --agent kiro -n payments
 Once files are generated, point your agent at the spec:
 
 ```
-Read .cursor/specs/auth/requirements.md and execute task 1.1 from tasks.md.
+Read .agents/specs/auth/requirements.md and execute task 1.1 from tasks.md.
 Validate the result against the EARS criteria.
 ```
 

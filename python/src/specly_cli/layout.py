@@ -3,10 +3,11 @@
 import os
 import re
 
-AGENT_KEYS = ["generic", "cursor", "kiro", "vscode", "antigravity", "windsurf", "claude"]
+AGENT_KEYS = ["generic", "agents", "cursor", "kiro", "vscode", "antigravity", "windsurf", "claude"]
 
 AGENT_LABELS = {
     "generic": "Generic",
+    "agents": "Agents (Universal)",
     "cursor": "Cursor",
     "kiro": "Kiro",
     "vscode": "VS Code / Copilot",
@@ -25,6 +26,10 @@ class LayoutError(Exception):
 
 def detect_agent(root: str) -> str:
     """Detect agent from existing project markers in root."""
+    if os.path.exists(os.path.join(root, ".agents")) or os.path.exists(
+        os.path.join(root, "AGENTS.md")
+    ) or os.path.exists(os.path.join(root, "agents.md")):
+        return "agents"
     if os.path.exists(os.path.join(root, ".cursor")):
         return "cursor"
     if os.path.exists(os.path.join(root, ".kiro")):
@@ -59,6 +64,7 @@ def resolve_layout(agent: str, feature: str, root: str, layouts: dict = None) ->
     # Default layout mappings conforming to artifact-contract-v1
     layout_defs = layouts or {
         "generic": {"specsDir": "specs", "steeringDir": "specs", "agentDir": "specs"},
+        "agents": {"specsDir": ".agents/specs/{feature}", "steeringDir": ".agents", "agentDir": ".agents"},
         "cursor": {"specsDir": ".cursor/specs/{feature}", "steeringDir": ".cursor", "agentDir": ".cursor"},
         "kiro": {"specsDir": ".kiro/specs/{feature}", "steeringDir": ".kiro", "agentDir": ".kiro"},
         "vscode": {"specsDir": ".vscode/specs/{feature}", "steeringDir": ".vscode", "agentDir": ".vscode"},

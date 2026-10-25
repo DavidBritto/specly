@@ -60,6 +60,29 @@ test("generic: creates 5 spec files in specs/", () => {
   assert.ok(fs.existsSync(path.join(specs, "how-to-use.md")));
 });
 
+test("agents: creates specs in .agents/specs/<feature>/", () => {
+  const dir = tempDir();
+  fs.mkdirSync(path.join(dir, ".agents"));
+  runSdd(dir, ["--agent", "agents", "--feature", "auth"]);
+
+  const featureDir = path.join(dir, ".agents", "specs", "auth");
+  assert.ok(fs.existsSync(path.join(featureDir, "requirements.md")));
+  assert.ok(fs.existsSync(path.join(dir, ".agents", "steering.md")));
+  assert.ok(fs.existsSync(path.join(dir, ".agents", "how-to-use.md")));
+});
+
+test("agents: auto-detects .agents folder and AGENTS.md", () => {
+  const dir1 = tempDir();
+  fs.mkdirSync(path.join(dir1, ".agents"));
+  runSdd(dir1);
+  assert.ok(fs.existsSync(path.join(dir1, ".agents", "specs", "starter", "requirements.md")));
+
+  const dir2 = tempDir();
+  fs.writeFileSync(path.join(dir2, "AGENTS.md"), "# Agents\n");
+  runSdd(dir2);
+  assert.ok(fs.existsSync(path.join(dir2, ".agents", "specs", "starter", "requirements.md")));
+});
+
 test("cursor: creates specs in .cursor/specs/<feature>/", () => {
   const dir = tempDir();
   fs.mkdirSync(path.join(dir, ".cursor"));
@@ -379,8 +402,9 @@ test("artifact contract fixture matches every Node template and agent layout", (
 });
 
 test("fresh Node output conforms to the shared artifact contract", () => {
-  for (const agent of ["generic", "cursor"]) {
+  for (const agent of ["generic", "agents", "cursor"]) {
     const dir = tempDir();
+    if (agent === "agents") fs.mkdirSync(path.join(dir, ".agents"));
     if (agent === "cursor") fs.mkdirSync(path.join(dir, ".cursor"));
     const feature = "contract-check";
     runSdd(dir, ["init", "--agent", agent, "--feature", feature]);

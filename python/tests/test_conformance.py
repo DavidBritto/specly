@@ -48,7 +48,10 @@ class TestCrossRuntimeConformance(unittest.TestCase):
                 python_dir = tempfile.mkdtemp()
                 try:
                     # If agent uses specific directory markers, create them
-                    if agent == "cursor":
+                    if agent == "agents":
+                        os.makedirs(os.path.join(node_dir, ".agents"), exist_ok=True)
+                        os.makedirs(os.path.join(python_dir, ".agents"), exist_ok=True)
+                    elif agent == "cursor":
                         os.makedirs(os.path.join(node_dir, ".cursor"), exist_ok=True)
                         os.makedirs(os.path.join(python_dir, ".cursor"), exist_ok=True)
                     elif agent == "kiro":

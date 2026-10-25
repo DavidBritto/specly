@@ -111,10 +111,11 @@ The agent loads the skill automatically when the keyword is mentioned.
 
 The CLI auto-detects the agent from existing project folders:
 
-| Agent       | Flag                  | Specs path                     | Steering              | Hooks path       |
-|-------------|-----------------------|--------------------------------|-----------------------|------------------|
-| Generic     | `--agent generic`     | `specs/`                       | `specs/steering.md`   | `.githooks/`     |
-| Cursor      | `--agent cursor`      | `.cursor/specs/<feature>/`    | `.cursor/steering.md` | —                |
+| Agent               | Flag                  | Specs path                     | Steering                | Hooks path       |
+|---------------------|-----------------------|--------------------------------|-------------------------|------------------|
+| Agents (Universal)  | `--agent agents`      | `.agents/specs/<feature>/`     | `.agents/steering.md`   | `.agents/hooks/` |
+| Generic             | `--agent generic`     | `specs/`                       | `specs/steering.md`     | `.githooks/`     |
+| Cursor              | `--agent cursor`      | `.cursor/specs/<feature>/`     | `.cursor/steering.md`   | —                |
 | Kiro        | `--agent kiro`        | `.kiro/specs/<feature>/`      | `.kiro/steering.md`   | `.kiro/hooks/`   |
 | VS Code     | `--agent vscode`      | `.vscode/specs/<feature>/`    | `.vscode/steering.md`  | —                |
 | Antigravity | `--agent antigravity` | `.agent/specs/<feature>/`     | `.agent/steering.md`   | —                |
@@ -186,7 +187,7 @@ Validate the result against the EARS criteria.
 For agents with per-feature folders:
 
 ```
-Read .cursor/specs/auth/requirements.md and execute task 2.1 from tasks.md.
+Read .agents/specs/auth/requirements.md and execute task 2.1 from tasks.md.
 ```
 
 For validation after implementation:

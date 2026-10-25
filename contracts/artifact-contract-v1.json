@@ -55,12 +55,13 @@
       "directory": "agentDir",
       "file": "how-to-use.md",
       "template": "how-to-use.md",
-      "sha256": "0d09f70b6f6965509589b6a424c7d3f14a42cf3df134b1b4ed2061d5a77956e5",
+      "sha256": "da114c018d023d8a69dff2cff937e6553ab9679b84c9927652cfe9626718c5fc",
       "ownership": "user"
     }
   ],
   "layouts": {
     "generic": { "specsDir": "specs", "steeringDir": "specs", "agentDir": "specs" },
+    "agents": { "specsDir": ".agents/specs/{feature}", "steeringDir": ".agents", "agentDir": ".agents" },
     "cursor": { "specsDir": ".cursor/specs/{feature}", "steeringDir": ".cursor", "agentDir": ".cursor" },
     "kiro": { "specsDir": ".kiro/specs/{feature}", "steeringDir": ".kiro", "agentDir": ".kiro" },
     "vscode": { "specsDir": ".vscode/specs/{feature}", "steeringDir": ".vscode", "agentDir": ".vscode" },

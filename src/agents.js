@@ -34,6 +34,21 @@ const AGENTS = {
     }),
   },
 
+  agents: {
+    label: "Agents (Universal)",
+    detect: (root) =>
+      exists(path.join(root, ".agents")) ||
+      exists(path.join(root, "AGENTS.md")) ||
+      exists(path.join(root, "agents.md")),
+    paths: (feature) => ({
+      specsDir: `.agents/specs/${feature}`,
+      agentDir: ".agents",
+      steeringInSpecs: false,
+      hooksDir: `.agents/hooks`,
+      skillsDir: `.agents/skills`,
+    }),
+  },
+
   cursor: {
     label: "Cursor",
     detect: (root) => exists(path.join(root, ".cursor")),
@@ -127,6 +142,7 @@ function detectAgent(root) {
   if (detected.length === 1) return detected[0];
   if (detected.length > 1) {
     const priority = [
+      "agents",
       "kiro",
       "cursor",
       "antigravity",

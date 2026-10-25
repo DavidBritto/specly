@@ -71,7 +71,7 @@ Options:
 
 Examples:
   npx specly
-  npx specly --agent cursor --feature auth
+  npx specly --agent agents --feature auth
   npx specly --agent kiro -n payments
   npx specly --agent generic
 `);
